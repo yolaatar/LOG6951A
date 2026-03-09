@@ -15,10 +15,12 @@ Assistant de recherche documentaire basé sur une architecture RAG
 4. [Tâche 1 — Ingestion et indexation](#tâche-1--ingestion-et-indexation)
 5. [Tâche 1 — Test du retrieval](#tâche-1--test-du-retrieval)
 6. [Tâche 2 — Évaluation retrieval (cosinus vs MMR)](#tâche-2--évaluation-retrieval-cosinus-vs-mmr)
-7. [Lancement de l'interface Streamlit](#lancement-de-linterface-streamlit)
-8. [Structure du projet](#structure-du-projet)
-9. [État d'avancement](#état-davancement)
-10. [Dépendances — notes importantes](#dépendances--notes-importantes)
+7. [Tâche 3 — Pipeline RAG avec citations et mémoire](#tâche-3--pipeline-rag-avec-citations-et-mémoire)
+8. [Tâche 4 — Multi-Query + RRF](#tâche-4--multi-query--rrf)
+9. [Tâche 5 — Interface Streamlit](#tâche-5--interface-streamlit)
+10. [Structure du projet](#structure-du-projet)
+11. [État d'avancement](#état-davancement)
+12. [Dépendances — notes importantes](#dépendances--notes-importantes)
 
 ---
 
@@ -338,6 +340,137 @@ Teste les combinaisons suivantes et affiche un tableau comparatif :
 
 ---
 
+## Tâche 3 — Pipeline RAG avec citations et mémoire
+
+### Prérequis
+
+- Base ChromaDB peuplée (`python src/ingestion/run_ingestion.py`)
+- Ollama actif avec le modèle chargé :
+  ```bash
+  ollama serve          # dans un terminal dédié
+  ollama pull mistral:7b-instruct
+  ```
+
+### Architecture T3
+
+| Composant | Fichier | Rôle |
+|---|---|---|
+| Prompt | `src/rag/prompt.py` | Pattern Persona + Structured Output (Réponse / Sources / Limites) |
+| Mémoire | `src/rag/memory.py` | Historique 3 tours avec sources |
+| Pipeline | `src/rag/chain.py` | `RAGPipeline` · `build_rag_pipeline()` · `answer_question()` |
+
+### Démo console (scénario automatique 3 tours)
+
+```bash
+# Scénario automatique — 3 questions enchaînées avec mémoire
+python src/rag/demo_rag.py
+
+# Mode interactif (Q&A libre)
+python src/rag/demo_rag.py --interactive
+
+# Avec MultiQuery + RRF activé
+python src/rag/demo_rag.py --multiquery
+python src/rag/demo_rag.py --interactive --multiquery
+```
+
+Dans le mode interactif, préfixez votre question avec `mmr:` pour forcer la stratégie MMR.
+
+### Format de réponse (Structured Output)
+
+Chaque réponse du LLM suit le format :
+
+```
+**Réponse**
+<réponse factuelle avec citations [N]>
+
+**Sources**
+[1] fichier.txt · [2] autre.md
+
+**Limites / Incertitudes**
+<ce qui ne peut pas être affirmé depuis le contexte>
+```
+
+---
+
+## Tâche 4 — Multi-Query + RRF
+
+### Principe
+
+1. Le LLM génère N reformulations de la question (défaut : 3)
+2. Chaque variante déclenche une recherche independante (cosine ou MMR)
+3. Les résultats sont fusionnés avec **Reciprocal Rank Fusion** :
+   $\text{RRF}(d) = \sum_q \frac{1}{k + \text{rank}_q(d)}$
+4. Déduplication par `chunk_id`, tri par score décroissant
+
+### Évaluation comparée (brute cosine vs multi-query + RRF)
+
+```bash
+# Évaluation console sur les 5 requêtes de eval_queries.py
+python src/retrieval/evaluate_multiquery.py
+
+# Sélectionner 3 requêtes spécifiques
+python src/retrieval/evaluate_multiquery.py --queries 1,2,3
+
+# Exporter le rapport
+python src/retrieval/evaluate_multiquery.py --export
+```
+
+### Sortie attendue (extrait)
+
+```
+══════════════════════════════════════════════════════════════════════
+  Q1 [Définition / question factuelle]
+  What is Retrieval-Augmented Generation and how does it work?
+──────────────────────────────────────────────────────────────────────
+  BRUTE (cosine pur)
+    chunks : 4  |  sources : 2  |  types : 2
+    fichiers : intro_rag.txt, langchain_notes.md
+  MULTI-QUERY + RRF (cosine)
+    variantes (3) :
+      • Explain the concept of Retrieval-Augmented Generation (RAG)
+      • How does RAG combine retrieval and generation in NLP?
+      • What role does retrieval play in augmented language models?
+    chunks : 4  |  sources : 3  |  types : 3
+    fichiers : intro_rag.txt, langchain_notes.md, wikipedia_rag
+  Δ sources : +1
+══════════════════════════════════════════════════════════════════════
+```
+
+### Fichier produit
+
+| Fichier | Description |
+|---|---|
+| `outputs/multiquery_eval.md` | Rapport Markdown avec tableau comparatif et détail par requête |
+
+---
+
+## Tâche 5 — Interface Streamlit
+
+```bash
+streamlit run src/ui/app.py
+```
+
+Ouvre `http://localhost:8501`.
+
+### Fonctionnalités
+
+| Zone | Description |
+|---|---|
+| **Sidebar — Stratégie** | 4 modes : Cosine · MMR · MultiQuery+Cosine · MultiQuery+MMR |
+| **Sidebar — Documents** | Upload .txt / .md / .pdf → `data/raw/` + bouton re-indexation |
+| **Sidebar — Mémoire** | Bouton "Effacer la conversation" (reset historique + mémoire RAG) |
+| **Chat** | Affiche l'historique complet avec rôles `user` / `assistant` |
+| **Réponse** | Réponse formatée (Structured Output) + expander Sources |
+| **MultiQuery** | Expander dédié affichant les variantes générées par le LLM |
+
+### Notes
+
+- Le pipeline est mis en cache par Streamlit (`@st.cache_resource`) — un seul chargement au démarrage.
+- Si Ollama n'est pas accessible, un message d'erreur clair s'affiche avec les instructions de démarrage.
+- Après upload + re-indexation, rafraîchissez la page (F5) pour recharger le pipeline avec le nouveau corpus.
+
+---
+
 ## Lancement de l'interface Streamlit
 
 ```bash
@@ -346,8 +479,7 @@ streamlit run src/ui/app.py
 
 Ouvre automatiquement `http://localhost:8501`.
 
-> ⚠️ L'interface affiche des réponses placeholder (Tâche 1).
-> La connexion au pipeline RAG réel est prévue en Tâche 2.
+> Ollama doit être lancé (`ollama serve`) avant de démarrer l'interface.
 
 ---
 
@@ -368,7 +500,8 @@ ResearchPal/
 │   └── chroma_db/                   ← Base vectorielle (auto-généré) ✅
 │
 ├── outputs/
-│   └── retrieval_eval.md            ← Rapport généré par --export   ✅ (auto)
+│   ├── retrieval_eval.md            ← Rapport T2 généré par --export ✅ (auto)
+│   └── multiquery_eval.md           ← Rapport T4 généré par --export ✅ (auto)
 │
 └── src/
     ├── config.py                    ← ⭐ Configuration centrale       ✅
@@ -383,18 +516,20 @@ ResearchPal/
     ├── retrieval/
     │   ├── cosine_retriever.py      ← Similarité cosinus              ✅
     │   ├── mmr_retriever.py         ← MMR avec paramètres documentés  ✅
-    │   ├── eval_queries.py          ← 5 requêtes de test annotées     ✅ T2
-    │   ├── evaluate_retrieval.py    ← Script d'évaluation comparée    ✅ T2
-    │   ├── test_retrieval.py        ← Script de validation rapide     ✅
-    │   └── multiquery.py            ← Placeholder (Tâche 2+)
+    │   ├── eval_queries.py          ← 5 requêtes annotées             ✅ T2
+    │   ├── evaluate_retrieval.py    ← Éval cosinus vs MMR             ✅ T2
+    │   ├── multiquery.py            ← Multi-Query + RRF               ✅ T4
+    │   ├── evaluate_multiquery.py   ← Éval brute vs multi-query       ✅ T4
+    │   └── test_retrieval.py        ← Validation rapide               ✅
     │
     ├── rag/
-    │   ├── prompt.py                ← System prompt                   ✅
-    │   ├── chain.py                 ← Pipeline RAG (Tâche 2)
-    │   └── memory.py                ← Historique conversationnel      ✅
+    │   ├── prompt.py                ← Persona + Structured Output     ✅ T3
+    │   ├── memory.py                ← Mémoire 3 tours avec sources    ✅ T3
+    │   ├── chain.py                 ← RAGPipeline end-to-end          ✅ T3
+    │   └── demo_rag.py              ← Démo console / interactive      ✅ T3
     │
     └── ui/
-        └── app.py                   ← Interface Streamlit             ✅ (squelette)
+        └── app.py                   ← Interface Streamlit complète    ✅ T5
 ```
 
 ---
@@ -415,9 +550,13 @@ ResearchPal/
 | `evaluate_retrieval.py` | ✅ Fait T2 | Éval comparée + métriques + export Markdown |
 | Balayage paramètres MMR | ✅ Fait T2 | `--param-sweep` (12 combinaisons) |
 | `test_retrieval.py` | ✅ Fait | Validation rapide des 2 stratégies |
-| Pipeline RAG (chain.py) | ⏳ Tâche 2+ | À connecter avec ChatOllama |
-| Multi-query retrieval | ⏳ Tâche 2+ | Placeholder dans `multiquery.py` |
-| Interface Streamlit | ⏳ Tâche 3 | Squelette présent, RAG à brancher |
+| `prompt.py` | ✅ Fait T3 | Persona + Structured Output + mémoire |
+| `memory.py` | ✅ Fait T3 | Historique 3 tours avec sources |
+| `chain.py` | ✅ Fait T3 | `RAGPipeline` + `RAGResult` + gestion erreurs |
+| `demo_rag.py` | ✅ Fait T3 | Démo console auto + mode interactif |
+| `multiquery.py` | ✅ Fait T4 | `generate_query_variants()` + `rrf_fuse()` + fallback |
+| `evaluate_multiquery.py` | ✅ Fait T4 | Éval brute vs multi-query + export Markdown |
+| Interface Streamlit | ✅ Fait T5 | 4 stratégies, upload documents, historique, sources |
 
 ---
 
