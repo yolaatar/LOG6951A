@@ -14,10 +14,11 @@ Assistant de recherche documentaire basé sur une architecture RAG
 3. [Corpus de test — data/raw/](#corpus-de-test--dataraw)
 4. [Tâche 1 — Ingestion et indexation](#tâche-1--ingestion-et-indexation)
 5. [Tâche 1 — Test du retrieval](#tâche-1--test-du-retrieval)
-6. [Lancement de l'interface Streamlit](#lancement-de-linterface-streamlit)
-7. [Structure du projet](#structure-du-projet)
-8. [État d'avancement](#état-davancement)
-9. [Dépendances — notes importantes](#dépendances--notes-importantes)
+6. [Tâche 2 — Évaluation retrieval (cosinus vs MMR)](#tâche-2--évaluation-retrieval-cosinus-vs-mmr)
+7. [Lancement de l'interface Streamlit](#lancement-de-linterface-streamlit)
+8. [Structure du projet](#structure-du-projet)
+9. [État d'avancement](#état-davancement)
+10. [Dépendances — notes importantes](#dépendances--notes-importantes)
 
 ---
 
@@ -259,6 +260,84 @@ Chargement de la base ChromaDB...
 
 ---
 
+## Tâche 2 — Évaluation retrieval (cosinus vs MMR)
+
+### Prérequis
+
+La base ChromaDB doit être peuplée (Tâche 1) :
+```bash
+python src/ingestion/run_ingestion.py
+```
+
+### Lancer l'évaluation standard
+
+```bash
+# Évaluation console — 5 requêtes × cosinus + MMR
+python src/retrieval/evaluate_retrieval.py
+
+# Avec paramètres personnalisés
+python src/retrieval/evaluate_retrieval.py --k 5 --fetch-k 12 --lambda-mult 0.3
+
+# Export du rapport Markdown (outputs/retrieval_eval.md)
+python src/retrieval/evaluate_retrieval.py --export
+
+# Export vers un chemin spécifique
+python src/retrieval/evaluate_retrieval.py --export mon_rapport.md
+```
+
+### Options disponibles
+
+| Option | Défaut | Description |
+|---|---|---|
+| `--k` | 4 | Nombre de chunks retournés par requête |
+| `--fetch-k` | 20 | Candidats initiaux pour MMR (avant re-classement) |
+| `--lambda-mult` | 0.5 | Équilibre diversité/pertinence MMR (0=diversité, 1=pertinence) |
+| `--export [chemin]` | — | Exporte le rapport en Markdown |
+| `--param-sweep` | — | Balayage de paramètres MMR |
+
+### Balayage de paramètres MMR
+
+Pour identifier les meilleurs réglages MMR sur le corpus :
+
+```bash
+python src/retrieval/evaluate_retrieval.py --param-sweep
+```
+
+Teste les combinaisons suivantes et affiche un tableau comparatif :
+
+| Paramètre | Valeurs testées |
+|---|---|
+| `k` | 3, 5 |
+| `fetch_k` | 8, 12 |
+| `lambda_mult` | 0.3, 0.5, 0.7 |
+
+### Fichiers produits
+
+| Fichier | Description |
+|---|---|
+| `outputs/retrieval_eval.md` | Rapport Markdown avec résultats par requête, métriques et observations |
+
+### Métriques calculées
+
+| Métrique | Description |
+|---|---|
+| **Sources distinctes** | Nombre de fichiers/URLs différents dans le top-k |
+| **Types distincts** | Diversité des types de documents (`text`, `markdown`, `web`) |
+| **Longueur moyenne** | Taille moyenne des chunks retournés (en caractères) |
+| **Paires redondantes** | Paires de chunks avec similarité Jaccard ≥ 0.5 |
+
+### Requêtes de test (src/retrieval/eval_queries.py)
+
+| # | Catégorie | Intérêt |
+|---|---|---|
+| 1 | Définition / factuelle | Teste la pertinence basique |
+| 2 | Comparaison entre concepts | Révèle la redondance intra-source |
+| 3 | Synthèse / question large | Montre la couverture multi-source |
+| 4 | Question précise / mot-clé rare | Teste les cas de corpus sparse |
+| 5 | Cas limite / requête ambiguë | Comportement hors-corpus |
+
+---
+
 ## Lancement de l'interface Streamlit
 
 ```bash
@@ -288,6 +367,9 @@ ResearchPal/
 │   │   └── [vos_fichiers.pdf]       ← Sources PDF optionnelles
 │   └── chroma_db/                   ← Base vectorielle (auto-généré) ✅
 │
+├── outputs/
+│   └── retrieval_eval.md            ← Rapport généré par --export   ✅ (auto)
+│
 └── src/
     ├── config.py                    ← ⭐ Configuration centrale       ✅
     ├── main.py                      ← Vérification environnement      ✅
@@ -299,10 +381,12 @@ ResearchPal/
     │   └── run_ingestion.py         ← Pipeline d'ingestion exécutable ✅
     │
     ├── retrieval/
-    │   ├── cosine_retriever.py      ← Stratégie cosinus               ✅
-    │   ├── mmr_retriever.py         ← Stratégie MMR                   ✅
-    │   ├── test_retrieval.py        ← Script de validation retrieval  ✅
-    │   └── multiquery.py            ← Placeholder (Tâche 2)
+    │   ├── cosine_retriever.py      ← Similarité cosinus              ✅
+    │   ├── mmr_retriever.py         ← MMR avec paramètres documentés  ✅
+    │   ├── eval_queries.py          ← 5 requêtes de test annotées     ✅ T2
+    │   ├── evaluate_retrieval.py    ← Script d'évaluation comparée    ✅ T2
+    │   ├── test_retrieval.py        ← Script de validation rapide     ✅
+    │   └── multiquery.py            ← Placeholder (Tâche 2+)
     │
     ├── rag/
     │   ├── prompt.py                ← System prompt                   ✅
@@ -310,7 +394,7 @@ ResearchPal/
     │   └── memory.py                ← Historique conversationnel      ✅
     │
     └── ui/
-        └── app.py                   ← Interface Streamlit (Tâche 3)  ✅ (squelette)
+        └── app.py                   ← Interface Streamlit             ✅ (squelette)
 ```
 
 ---
@@ -325,11 +409,14 @@ ResearchPal/
 | `chunking.py` | ✅ Fait | Récursif + `chunk_id` + `chunk_index` |
 | `indexer.py` | ✅ Fait | Chroma load/index/reset |
 | `run_ingestion.py` | ✅ Fait | Pipeline complet exécutable |
-| Retrieval cosinus | ✅ Fait | Via `as_retriever(search_type="similarity")` |
-| Retrieval MMR | ✅ Fait | Via `as_retriever(search_type="mmr")` |
-| `test_retrieval.py` | ✅ Fait | Teste les 2 stratégies en comparaison |
-| Pipeline RAG (chain.py) | ⏳ Tâche 2 | À connecter avec ChatOllama |
-| Multi-query retrieval | ⏳ Tâche 2 | Placeholder dans `multiquery.py` |
+| Retrieval cosinus | ✅ Fait | `cosine_search_with_scores()` |
+| Retrieval MMR | ✅ Fait | Paramètres documentés + `mmr_search()` |
+| `eval_queries.py` | ✅ Fait T2 | 5 requêtes annotées par catégorie |
+| `evaluate_retrieval.py` | ✅ Fait T2 | Éval comparée + métriques + export Markdown |
+| Balayage paramètres MMR | ✅ Fait T2 | `--param-sweep` (12 combinaisons) |
+| `test_retrieval.py` | ✅ Fait | Validation rapide des 2 stratégies |
+| Pipeline RAG (chain.py) | ⏳ Tâche 2+ | À connecter avec ChatOllama |
+| Multi-query retrieval | ⏳ Tâche 2+ | Placeholder dans `multiquery.py` |
 | Interface Streamlit | ⏳ Tâche 3 | Squelette présent, RAG à brancher |
 
 ---
