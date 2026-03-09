@@ -1,0 +1,41 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# ResearchPal — requirements.txt
+#
+# Toutes les dépendances nécessaires pour le project RAG.
+# Installez avec :  pip install -r requirements.txt
+#
+# Note : langchain-community contient les loaders (PyPDFLoader, WebBaseLoader).
+#        langchain-chroma est le package officiel d'intégration Chroma.
+#        langchain-huggingface remplace l'ancien HuggingFaceEmbeddings de community.
+#        langchain-ollama est l'intégration officielle ChatOllama.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── LangChain (core + intégrations) ──────────────────────────────────────────
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-community>=0.3.0
+langchain-text-splitters>=0.3.0
+langchain-chroma>=0.1.4
+langchain-huggingface>=0.1.0
+langchain-ollama>=0.2.0
+
+# ── Base vectorielle ──────────────────────────────────────────────────────────
+chromadb>=0.5.0
+
+# ── Embeddings locaux ─────────────────────────────────────────────────────────
+sentence-transformers>=3.0.0
+
+# ── Lecture de PDF ────────────────────────────────────────────────────────────
+pypdf>=4.0.0
+
+# ── Chargement de pages web ───────────────────────────────────────────────────
+# beautifulsoup4 est utilisé par WebBaseLoader
+beautifulsoup4>=4.12.0
+requests>=2.31.0
+
+# ── Interface utilisateur ─────────────────────────────────────────────────────
+streamlit>=1.38.0
+
+# ── Utilitaires ───────────────────────────────────────────────────────────────
+python-dotenv>=1.0.0    # Optionnel : pour stocker des variables d'env dans .env
+tqdm>=4.66.0            # Barres de progression (utile pour l'ingestion en lot)

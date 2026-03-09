@@ -1,0 +1,54 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ── Environnement virtuel ─────────────────────────────────────────────────────
+venv/
+.venv/
+env/
+.env/
+
+# ── Variables d'environnement ─────────────────────────────────────────────────
+.env
+.env.local
+
+# ── Base vectorielle (ne pas versionner — trop volumineuse) ───────────────────
+data/chroma_db/
+
+# ── Données brutes (corpus de test) ───────────────────────────────────────────
+# Décommentez si vous ne voulez pas versionner les documents source
+# data/raw/
+
+# ── Rapport PDF (ajouté manuellement avant rendu) ────────────────────────────
+# rapport.pdf
+
+# ── IDEs ──────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── macOS ─────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Coverage / tests ──────────────────────────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+
+# ── Distribution Python ───────────────────────────────────────────────────────
+dist/
+build/
+*.egg-info/
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
