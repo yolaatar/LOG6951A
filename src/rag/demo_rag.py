@@ -36,7 +36,7 @@ def print_result(result, turn_num: int = 0) -> None:
     for i, doc in enumerate(result.retrieved_documents, 1):
         src = doc.metadata.get("source", "?")
         label = src if src.startswith("http") else Path(src).name
-        dtype = doc.metadata.get("doc_type", "?")
+        dtype = doc.metadata.get("type_document", doc.metadata.get("doc_type", "?"))
         snippet = doc.page_content[:80].replace("\n", " ")
         print(f"  [{i}] ({dtype}) {label} — {snippet}…")
 

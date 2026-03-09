@@ -1,5 +1,6 @@
 # cosine_retriever.py — retriever par similarité cosinus
 
+import warnings
 from typing import List, Tuple
 
 from langchain_chroma import Chroma
@@ -35,6 +36,8 @@ def cosine_search_with_scores(
     Variante avec scores : retourne [(Document, score), ...] triés par pertinence.
 
     Utilisé dans le script d'évaluation pour afficher les scores de similarité.
-    Les scores sont normalisés dans [0, 1] via relevance_score_fn.
+    Les scores ChromaDB peuvent dépasser [0,1] ; le warning LangChain est supprimé.
     """
-    return vectorstore.similarity_search_with_relevance_scores(query, k=k)
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", message="Relevance scores must be between 0 and 1")
+        return vectorstore.similarity_search_with_relevance_scores(query, k=k)

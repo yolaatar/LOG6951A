@@ -68,20 +68,25 @@ pip install -r requirements.txt
 > ⚠️ L'installation prend 2-5 minutes. `sentence-transformers` et `torch`
 > représentent la majorité du volume (~1 GB au total).
 
-### 4. Installer Ollama (pour le pipeline RAG — Tâche 2)
+### 4. Installer Ollama (requis pour T3/T4/T5)
 
-Téléchargement : <https://ollama.com/download>
+**Option A — installeur officiel** : <https://ollama.com/download>
+
+**Option B — Homebrew (macOS)** :
+```bash
+brew install ollama
+```
 
 ```bash
-# Dans un terminal dédié (à garder ouvert)
+# Dans un terminal dédié (à garder ouvert avant tout test T3/T4/T5)
 ollama serve
 
 # Télécharger le modèle (une seule fois, ~4 GB)
 ollama pull mistral:7b-instruct
 ```
 
-> Ollama n'est pas nécessaire pour la Tâche 1 (ingestion + retrieval).
-> Il est requis uniquement pour la génération de réponses (Tâche 2).
+> Ollama n'est pas nécessaire pour les Tâches 1 et 2 (ingestion + retrieval vectoriel).
+> Il est requis pour T3 (pipeline RAG), T4 (multi-query) et T5 (interface Streamlit).
 
 ### 5. Vérifier l'initialisation
 
@@ -415,7 +420,7 @@ python src/retrieval/evaluate_multiquery.py --queries 1,2,3
 python src/retrieval/evaluate_multiquery.py --export
 ```
 
-### Sortie attendue (extrait)
+### Sortie observée (corpus de 51 chunks)
 
 ```
 ══════════════════════════════════════════════════════════════════════
@@ -423,18 +428,28 @@ python src/retrieval/evaluate_multiquery.py --export
   What is Retrieval-Augmented Generation and how does it work?
 ──────────────────────────────────────────────────────────────────────
   BRUTE (cosine pur)
-    chunks : 4  |  sources : 2  |  types : 2
-    fichiers : intro_rag.txt, langchain_notes.md
+    chunks : 4  |  sources : 1  |  types : 1
+    fichiers : https://en.wikipedia.org/wiki/Retrieval-augmented_generation
   MULTI-QUERY + RRF (cosine)
     variantes (3) :
-      • Explain the concept of Retrieval-Augmented Generation (RAG)
-      • How does RAG combine retrieval and generation in NLP?
-      • What role does retrieval play in augmented language models?
-    chunks : 4  |  sources : 3  |  types : 3
-    fichiers : intro_rag.txt, langchain_notes.md, wikipedia_rag
-  Δ sources : +1
+      • Can you explain Retrieval-Augmented Generation and its functioning?
+      • What does Retrieval-Augmented Generation entail and how does it operate?
+      • How does Retrieval-Augmented Generation function, and what exactly is it?
+    chunks : 4  |  sources : 1  |  types : 1
+    fichiers : https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+  Δ sources : +0
+══════════════════════════════════════════════════════════════════════
+  Résumé : Δ moyen sources = +0.00 (multi-query vs brute)
 ══════════════════════════════════════════════════════════════════════
 ```
+
+> **Analyse** : avec un corpus réduit (51 chunks, 3 sources), le Top-K = 4 est
+> dominé par les mêmes chunks indépendamment de la reformulation, donc la
+> diversité RRF est nulle (*Δ = +0*). Le gain de Multi-Query + RRF est
+> observable sur des corpus plus larges (>1000 chunks, 10+ sources) où des
+> reformulations différentes atteignent des zones sémantiques distinctes.
+> La valeur pédagogique ici est la démonstration du pipeline (variantes
+> générées, fusion RRF fonctionnelle, fallback si LLM échoue).
 
 ### Fichier produit
 
