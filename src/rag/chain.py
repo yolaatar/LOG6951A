@@ -17,6 +17,9 @@ from config import (
     RETRIEVAL_TOP_K,
     MMR_FETCH_K,
     MMR_LAMBDA,
+    DEBUG_TRACE,
+    OUT_OF_SCOPE_SCORE_THRESHOLD,
+    DOMAIN_KEYWORDS,
 )
 from ingestion.indexer import load_vectorstore
 from retrieval.cosine_retriever import cosine_search_with_scores
@@ -85,6 +88,11 @@ class RAGPipeline:
         self.lambda_mult = lambda_mult
         self.memory = ConversationMemory()
 
+    @staticmethod
+    def _is_domain_question(question: str) -> bool:
+        q = question.lower()
+        return any(keyword in q for keyword in DOMAIN_KEYWORDS)
+
     def _retrieve(self, question: str, strategy: str, use_multiquery: bool):
         if use_multiquery:
             from retrieval.multiquery import multiquery_retrieve
@@ -109,6 +117,48 @@ class RAGPipeline:
         use_multiquery: bool = False,
     ) -> "RAGResult":
         """Répond à une question avec contexte + historique de 3 tours."""
+        best_score = None
+        try:
+            score_pairs = cosine_search_with_scores(self.vectorstore, question, k=1)
+            if score_pairs:
+                best_score = score_pairs[0][1]
+        except Exception:
+            best_score = None
+
+        out_of_scope = (
+            best_score is not None
+            and best_score < OUT_OF_SCOPE_SCORE_THRESHOLD
+            and not self._is_domain_question(question)
+        )
+
+        if out_of_scope:
+            answer_text = (
+                "**Réponse**\n"
+                "Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).\n"
+                "Je ne peux pas répondre de manière fiable sans source pertinente.\n\n"
+                "**Sources**\n"
+                "Aucune source pertinente récupérée.\n\n"
+                "**Limites / Incertitudes**\n"
+                "Le corpus actuel ne contient pas d'information suffisamment liée à cette question."
+            )
+            if DEBUG_TRACE:
+                print("\n[trace] USER_PROMPT:")
+                print(question)
+                print(f"[trace] BEST_COSINE_SCORE: {best_score:.4f}")
+                print("[trace] MODEL_INPUT: <skipped - question detected as out-of-scope>")
+                print("[trace] MODEL_RESPONSE:")
+                print(answer_text)
+
+            self.memory.add_turn(question, answer_text, sources=[])
+            return RAGResult(
+                question=question,
+                answer=answer_text,
+                sources=[],
+                retrieved_documents=[],
+                query_variants=[],
+                strategy=("multiquery+" if use_multiquery else "") + strategy,
+            )
+
         docs, variants = self._retrieve(question, strategy, use_multiquery)
 
         context = format_context(docs)
@@ -116,8 +166,23 @@ class RAGPipeline:
         prompt = build_rag_prompt(history=history)
         chain = prompt | self.llm
 
+        if DEBUG_TRACE:
+            prompt_value = prompt.format_prompt(context=context, question=question)
+            print("\n[trace] USER_PROMPT:")
+            print(question)
+            if best_score is not None:
+                print(f"[trace] BEST_COSINE_SCORE: {best_score:.4f}")
+            print("[trace] MODEL_INPUT:")
+            for msg in prompt_value.to_messages():
+                role = getattr(msg, "type", "message")
+                print(f"[{role}]\n{msg.content}\n")
+
         response = chain.invoke({"context": context, "question": question})
         answer_text = response.content if hasattr(response, "content") else str(response)
+
+        if DEBUG_TRACE:
+            print("[trace] MODEL_RESPONSE:")
+            print(answer_text)
 
         sources_seen: List[str] = []
         for doc in docs:

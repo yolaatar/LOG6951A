@@ -124,6 +124,8 @@ for msg in st.session_state.messages:
 # ── nouvelle question ─────────────────────────────────────────────────────────
 
 if prompt := st.chat_input("Votre question..."):
+    print("\n[trace-ui] USER_PROMPT:")
+    print(prompt)
     st.session_state.messages.append({"role": "user", "content": prompt, "sources": []})
 
     with st.chat_message("user"):

@@ -29,6 +29,27 @@ MMR_FETCH_K = 20       # nb de candidats avant ré-ordonnancement MMR
 MMR_LAMBDA = 0.5       # 0 = diversité max, 1 = pertinence max
 MULTIQUERY_VARIANTS = 3
 
+# debug / garde-fou hors sujet
+DEBUG_TRACE = True
+OUT_OF_SCOPE_SCORE_THRESHOLD = 0.1
+DOMAIN_KEYWORDS = [
+    "rag",
+    "retrieval",
+    "augment",
+    "langchain",
+    "vector",
+    "chroma",
+    "embedding",
+    "mmr",
+    "cosine",
+    "prompt",
+    "llm",
+    "chunk",
+    "document",
+    "source",
+    "recherche",
+]
+
 
 def print_config() -> None:
     print("=" * 50)
