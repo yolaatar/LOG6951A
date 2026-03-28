@@ -1,0 +1,62 @@
+════════════════════════════════════════════════════════════════════════
+  EC3 — Piège lexical — chevauchement trompeur
+  Catégorie : edge_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Qu'est-ce qu'un chunk dans le contexte du traitement du texte en général ?
+
+  Notes : Le mot 'chunk' génère un retrieval dense mais le contexte est spécifique au RAG. Risque de réponse trop large dépassant les sources.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 4
+    Sources uniques : 2
+    Citation [N]    : Oui
+    Structure 3 sec.: Oui
+    Ancrage         : 0.833  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Non
+    Verdict         : succès
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (4)
+    [1] langchain_notes.md  (chunk_id=36c4cd7c267dda4b)
+        ### Text Splitters Les `TextSplitter` découpent les
+        documents en chunks avant leur vectorisation. Le
+        `RecursiveCharacterTextSplitter` est le plus recommandé pour
+        le texte générique : il essaie de couper aux séparateurs
+        naturels (paragraphes, lignes,
+
+    [2] intro_rag.txt  (chunk_id=6858a2d190be23ed)
+        Architecture typique d'un système RAG Un pipeline RAG
+        complet comprend les étapes suivantes :  1. Ingestion — Les
+        documents source (PDF, pages web, textes) sont découpés en
+        chunks,    vectorisés avec un modèle d'embeddings, puis
+        stockés dans une base
+
+    [3] intro_rag.txt  (chunk_id=0ccad027dc7437d8)
+        Optimisation du RAG Plusieurs techniques permettent
+        d'améliorer les performances d'un système RAG : - HyDE
+        (Hypothetical Document Embeddings) : génère un document
+        hypothétique avant la   recherche pour se rapprocher de
+        l'espace des documents plutôt q
+
+    [4] langchain_notes.md  (chunk_id=d9d7af3c81faefb3)
+        - `search_type="similarity"` : similarité cosinus pure -
+        `search_type="mmr"` : Maximal Marginal Relevance (pertinence
+        + diversité)  Le `MultiQueryRetriever` encapsule un
+        retriever existant et génère automatiquement plusieurs
+        variantes de la question
+
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+   **Réponse**
+  Dans le contexte du traitement du texte, un "chunk" est une portion de texte découpée d'un document plus grand. Les `TextSplitter` sont utilisés pour découper les documents en chunks avant leur vectorisation. Le `RecursiveCharacterTextSplitter` essaie de couper aux séparateurs naturels tels que paragraphes, lignes et phrases, mais aussi au niveau des caractères si nécessaire [1].
+  
+  **Sources**
+  [1] langchain_notes.md
+  
+  **Limites / Incertitudes**
+  Il n'est pas explicitement mentionné comment ces "chunks" sont stockés et utilisés dans le pipeline RAG (Retrieval-Augmentation Generation), ni si ils sont uniquement découpés avant la vectorisation ou s'ils peuvent être recombinaires plus tard. De même, il n'est pas clair si tous les chunks ont une taille identique ou si leur taille peut varier.

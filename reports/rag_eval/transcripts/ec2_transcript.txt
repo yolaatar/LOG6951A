@@ -1,0 +1,69 @@
+════════════════════════════════════════════════════════════════════════
+  EC2 — Support de retrieval faible — sujet périphérique
+  Catégorie : edge_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Quel est le meilleur modèle d'embedding pour des textes en japonais ? Donne des exemples de modèles spécifiques avec leurs scores.
+
+  Notes : Risque élevé : le corpus ne contient pas cette info. Le modèle est tenté de citer des modèles inexistants dans le corpus.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 4
+    Sources uniques : 2
+    Citation [N]    : Oui
+    Structure 3 sec.: Oui
+    Ancrage         : 0.778  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Non
+    Verdict         : succès
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (4)
+    [1] intro_rag.txt  (chunk_id=c9b8233af2d1881c)
+        Les embeddings Les embeddings sont des représentations
+        vectorielles denses des textes qui capturent leur
+        signification sémantique. Deux phrases proches
+        sémantiquement auront des vecteurs proches dans l'espace
+        d'embeddings. Des modèles légers et gratu
+
+    [2] langchain_notes.md  (chunk_id=36c4cd7c267dda4b)
+        ### Text Splitters Les `TextSplitter` découpent les
+        documents en chunks avant leur vectorisation. Le
+        `RecursiveCharacterTextSplitter` est le plus recommandé pour
+        le texte générique : il essaie de couper aux séparateurs
+        naturels (paragraphes, lignes,
+
+    [3] intro_rag.txt  (chunk_id=0ccad027dc7437d8)
+        Optimisation du RAG Plusieurs techniques permettent
+        d'améliorer les performances d'un système RAG : - HyDE
+        (Hypothetical Document Embeddings) : génère un document
+        hypothétique avant la   recherche pour se rapprocher de
+        l'espace des documents plutôt q
+
+    [4] intro_rag.txt  (chunk_id=6858a2d190be23ed)
+        Architecture typique d'un système RAG Un pipeline RAG
+        complet comprend les étapes suivantes :  1. Ingestion — Les
+        documents source (PDF, pages web, textes) sont découpés en
+        chunks,    vectorisés avec un modèle d'embeddings, puis
+        stockés dans une base
+
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+   ---
+  **Réponse**
+  Pour obtenir des informations sur les modèles d'embeddings appropriés pour des textes en japonais, il est nécessaire de consulter différents modèles proposés par LangChain. Cependant, le contexte fourni ne spécifie pas de scores particuliers pour ces modèles. Voici une liste de quelques-uns d'entre eux :
+  
+  1. `HuggingFaceEmbeddings` : cette interface unifiée permet d'accéder à différents modèles locaux gratuits, notamment des modèles spécifiques pour le japonais (par exemple, `m-bart-50`, qui est un modèle multilingue pré-entraîné sur 50 langues et qui supporte également le japonais).
+  2. `OllamaEmbeddings` : cette option permet d'utiliser des embeddings via l'API Ollama locale. Il n'est pas spécifié s'il existe des modèles spécifiques pour le japonais dans ce cas.
+  
+  Il est important de noter que les scores de performance pour ces modèles ne sont pas spécifiés dans le contexte fourni, de sorte qu'il n'est pas possible de déterminer si certains modèles seraient plus appropriés ou efficaces que d'autres pour des textes en japonais.
+  
+  **Sources**
+  1. [1] (text) intro_rag.txt
+  2. [3] (text) intro_rag.txt
+  
+  **Limites / Incertitudes**
+  Le contexte fourni ne spécifie pas de scores pour les modèles d'embeddings appropriés pour des textes en japonais.

@@ -1,0 +1,35 @@
+════════════════════════════════════════════════════════════════════════
+  EC5 — Suivi multi-tours — référence au tour 1 depuis le tour 3
+  Catégorie : edge_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Peux-tu développer le premier point que tu avais mentionné dans ta toute première réponse sur ce sujet ?
+
+  Notes : Exécuté après 2 tours de setup sur MMR. Teste si la mémoire glissante préserve le tour 1 au tour 3.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 0
+    Sources uniques : 0
+    Citation [N]    : Non
+    Structure 3 sec.: Oui
+    Ancrage         : 0.000  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Oui
+    Verdict         : retrieval vide
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (0)
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+  **Réponse**
+  Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).
+  Je ne peux pas répondre de manière fiable sans source pertinente.
+  
+  **Sources**
+  Aucune source pertinente récupérée.
+  
+  **Limites / Incertitudes**
+  Le corpus actuel ne contient pas d'information suffisamment liée à cette question.

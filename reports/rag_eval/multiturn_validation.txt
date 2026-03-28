@@ -1,0 +1,323 @@
+════════════════════════════════════════════════════════════════════════
+  Validation multi-tours — correctif history-aware
+  Généré le 2026-03-28 04:16
+════════════════════════════════════════════════════════════════════════
+
+════════════════════════════════════════════════════════════════════════
+  VAL1 — Dialogue implicite — pronoms anaphoriques (3 tours)
+  Le tour 2 utilise 'ses' (pronom) et le tour 3 'cette approche' (déterminant démonstratif). Sans enrichissement, les deux seraient rejetés.
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Question    : Qu'est-ce que RAG (Retrieval-Augmented Generation) et comment fonctionne-t-il ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+
+  Réponse :
+     ---
+    **Réponse**
+    Le Retrieval-Augmented Generation (RAG) est une architecture qui améliore les modèles de langage en leur permettant d'accéder à des informations externes au moment de la génération [1]. Un système RAG interroge une base de connaissances externe en temps réel, ce qui atténue les deux problèmes majeurs des modèles de langage : leur connaissance s'arrête à la date de coupure d'entraînement et leurs capacités à produire des hallucinations [1].
+    
+    Une architecture typique d'un système RAG comprend les étapes suivantes : ingestion, retrieval, augmentation, et génération [2]. Lorsqu'un utilisateur pose une question, elle est vectorisée de la même façon. Les chunks les plus proches dans l'espace vectoriel sont récupérés [2]. Les chunks récupérés sont insérés dans le contexte du prompt envoyé au LLM, accompagnés de la question de l'utilisateur [2]. Enfin, le LLM génère une réponse en s'appuyant sur les chunks fournis [2].
+    
+    Il existe plusieurs stratégies pour récupérer les documents pertinents : similarité cosinus, MMR (Maximal Marginal Relevance), et multi-query retrieval [3][4]. La similarité cosinus est la stratégie de base, rapide et efficace pour la plupart des cas. Le MMR combine pertinence et diversité pour éviter de retourner des chunks trop similaires entre eux. Il est utile quand les documents contiennent beaucoup de répétitions. Enfin, le multi-query retrieval génère plusieurs reformulations de la question et agrège les résultats, améliorant le rappel pour les questions ambiguës ou complexes [4].
+    ---
+    **Sources**
+    [1] (text) intro_rag.txt
+    [2] (text) intro_rag.txt
+    [3] (web) https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+    [4] (text) intro_rag.txt
+    ---
+    **Limites / Incertitudes**
+    Le contexte fourni ne permet pas de déterminer si tous les détails des étapes d'ingestion, de retrieval, et de génération sont couverts par le RAG, ou s'il y a d'autres étapes impliquées. De plus, il n'y a pas de sources pour décrire en détail ces stratégies de retrieval.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Question    : Quelles sont ses principales limites par rapport aux LLMs classiques ?
+  Enrichie    : Qu'est-ce que RAG (Retrieval-Augmented Generation) et comment fonctionne-t-il ? Quelles sont ses pri
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+
+  Réponse :
+     ---
+    **Réponse**
+    Le Retrieval-Augmented Generation (RAG) est un type de système qui améliore les performances des modèles de langage (LLM) en leur permettant d'accéder à des informations externes au moment de la génération [1]. En comparaison avec les LLMs classiques, RAG présente quelques principales limites :
+    
+    1. Efforts supplémentaires nécessaires pour le développement du système [2] : Un pipeline complet d'un système RAG comprend plusieurs étapes telles que l'ingestion des documents, le retrieval et la génération [2]. Cela signifie qu'il y a plus de travail à réaliser pour développer un tel système.
+    
+    2. La pertinence des informations récupérées est dépendante de la qualité de la base de connaissances externe utilisée [3] : Le RAG peut seulement renvoyer des documents qui sont déjà indexés dans sa base de données, ce qui peut limiter la portée des informations disponibles.
+    
+    **Sources**
+    1. (text) intro_rag.txt
+    2. (text) intro_rag.txt
+    3. (web) https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+    
+    **Limites / Incertitudes**
+    Les limites décrites précédemment sont basées sur la littérature disponible mais il est possible qu'il existe d'autres limites spécifiques aux différents systèmes RAG existants.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Question    : Comment MMR aide-t-il à résoudre certains de ces problèmes de redondance ?
+  Enrichie    : Quelles sont ses principales limites par rapport aux LLMs classiques ? Comment MMR aide-t-il à résou
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le Maximal Marginal Relevance (MMR) est une stratégie de recherche qui combine la pertinence et la diversité des documents trouvés pour éviter de retourner des chunks trop similaires entre eux [4]. MMR est utile quand les documents contiennent beaucoup de répétitions, ce qui peut être un problème pour certains systèmes de question-réponse. Cette technique aide à résoudre ce problème en optimisant la diversité des documents retournés, ce qui permet d'améliorer la qualité des réponses [1].
+    
+    **Sources**
+    [4] (text) intro_rag.txt
+    
+    **Limites / Incertitudes**
+    Le contexte fourni ne permet pas de préciser combien MMR améliore la qualité des réponses par rapport aux autres stratégies de recherche.
+
+────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════
+  VAL2 — Dialogue court — questions sous le seuil de longueur (3 tours)
+  Les tours 2 et 3 sont courts (< 9 mots). Sans enrichissement, leur score cosinus seul serait insuffisant.
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Question    : Explique-moi la stratégie MMR dans un pipeline RAG.
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le Maximal Marginal Relevance (MMR) est une stratégie de recherche utilisée dans un pipeline RAG pour récupérer des documents pertinents. Cette méthode prend en compte deux critères : la pertinence et la diversité des résultats. Le but est d'obtenir un ensemble de documents qui sont les plus pertinents pour répondre à une question, tout en étant aussi différents les uns des autres (pour éviter de fournir des réponses répétitives).
+    
+    La méthode MMR fonctionne par itération : lorsque le premier document est trouvé, il est ajouté au résultat et utilisé pour améliorer la pertinence des résultats suivants. Ensuite, un deuxième document est recherché qui soit aussi pertinent que possible en considérant le contenu du premier document (pour assurer la diversité), et ainsi de suite jusqu'à atteindre un certain nombre de documents souhaité.
+    
+    [3] (markdown) langchain_notes.md - La section "Le `MultiQueryRetriever`" décrit cette stratégie.
+    ---
+    **Sources**
+    1. [3] (markdown) langchain_notes.md
+    ---
+    **Limites / Incertitudes**
+    Ce contexte ne fournit pas d'informations supplémentaires sur la manière spécifique dont cette stratégie est mise en œuvre dans un pipeline RAG, ni sur sa précision ou ses performances comparées à d'autres méthodes de recherche.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Question    : Quels sont ses paramètres clés ?
+  Enrichie    : Explique-moi la stratégie MMR dans un pipeline RAG. Quels sont ses paramètres clés ?
+  AVANT fix   : REJETÉ ✗
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le Maximal Marginal Relevance (MMR) est une stratégie de recherche utilisée dans un pipeline RAG pour récupérer des documents pertinents. Cette méthode prend en compte deux critères : la pertinence et la diversité des résultats. Le but est d'obtenir un ensemble de documents qui sont les plus pertinents pour répondre à la question posée par l'utilisateur tout en offrant une variété de sources de renseignements [1].
+    
+    Il existe plusieurs stratégies pour récupérer ces documents, et MMR est utilisée pour optimiser le rappel et la diversité des résultats [4]. La stratégie MMR peut être implémentée à l'aide d'un `MultiQueryRetriever` qui génère automatiquement plusieurs variantes de la question pour maximiser le rappel [4].
+    
+    Dans un pipeline RAG, la gestion de mémoire conversationnelle permet de maintenir l'historique entre les tours de conversation. LangChain propose trois options pour cela : `ChatMessageHistory` (liste simple de messages en mémoire), `ConversationBufferMemory` (garde l'historique complet) et `ConversationSummaryMemory` (résume l'historique pour économiser les tokens) [2].
+    
+    ---
+    **Sources**
+    1. [1] text : intro_rag.txt
+    2. [2] text : intro_rag.txt
+    3. [4] markdown : langchain_notes.md
+    
+    **Limites / Incertitudes**
+    Le contexte ne mentionne pas explicitement les paramètres clés du MMR dans un pipeline RAG avec LCEL, mais il est possible de conclure qu'ils peuvent être configurables en fonction des besoins spécifiques du projet.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Question    : Et comment choisir la valeur de lambda ?
+  Enrichie    : Quels sont ses paramètres clés ? Et comment choisir la valeur de lambda ?
+  AVANT fix   : REJETÉ ✗
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : langchain_notes.md, intro_rag.txt
+
+  Réponse :
+     ---
+    **Réponse**
+    Dans un pipeline RAG utilisant ChromaDB, il existe deux modes principaux pour le `Retriever` : `search_type="similarity"` et `search_type="mmr"`. Le premier utilise la similarité cosinus pure tandis que le second, Maximal Marginal Relevance (MMR), prend en compte deux critères : la pertinence et la diversité des résultats. Ce dernier vise à obtenir un ensemble de documents qui sont pertinents et différents.
+    
+    Pour séparer les modules dans ChromaDB, il est recommandé de suivre certaines bonnes pratiques comme normaliser les embeddings pour utiliser la similarité cosinus correctement, séparer les modules (loaders, chunking, retrieval, RAG), stocker les métadonnées utiles dès l'ingestion pour pouvoir filtrer au retrieval, et utiliser des `chunk_id` déterministes pour éviter les doublons lors des réingestions.
+    
+    Le `MultiQueryRetriever` encapsule un retriever existant et génère automatiquement plusieurs variantes de la question pour maximiser le rappel. Enfin, pour maintenir le contexte entre les tours de conversation dans un pipeline RAG avec LCEL, LangChain propose différentes options comme `ChatMessageHistory`, `ConversationBufferMemory`, et `ConversationSummaryMemory`.
+    
+    Il n'est pas explicitement expliqué comment choisir la valeur de lambda pour MMR. Cela dépendrait du contexte spécifique de chaque utilisation, ainsi que des préférences de pertinence et de diversité que l'on souhaite atteindre.
+    
+    **Sources**
+    1. (markdown) langchain_notes.md
+    2. (text) intro_rag.txt
+    3. (markdown) langchain_notes.md
+    4. (markdown) langchain_notes.md
+    
+    **Limites / Incertitudes**
+    L'absence de mention explicite sur la façon de choisir la valeur de lambda pour MMR dans le contexte fourni.
+
+────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════
+  VAL3 — Dialogue synthèse — référence au tour 1 depuis le tour 3
+  Tour 3 référence 'ta première réponse'. Teste la robustesse de la mémoire glissante sur 3 tours.
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Question    : Qu'est-ce que le chunking et pourquoi est-il important dans un pipeline RAG ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le chunking est une étape importante dans un pipeline RAG (Retrieval-Augmented Generation) car il permet de découper les documents source en petits morceaux appelés chunks avant leur vectorisation. Ce processus permet aux modèles de langage (LLM) d'accéder à des informations plus précises et pertinentes lors de la génération de réponse. Les TextSplitter, notamment le RecursiveCharacterTextSplitter, sont utilisés pour découper les documents en chunks en se basant sur des séparateurs naturels tels que paragraphes, lignes ou phrases [2]. Il est également possible de définir la taille maximale d'un chunk et le nombre de caractères partagés entre deux chunks adjacents.
+    
+    **Sources**
+    1. (text) intro_rag.txt
+    2. (markdown) langchain_notes.md
+    
+    **Limites / Incertitudes**
+    Il n'est pas possible de déterminer si le chunking est nécessaire pour toutes les applications ou si d'autres stratégies peuvent être plus efficaces dans certains cas. De même, il n'est pas explicitement mentionné comment le LLM utilise les chunks récupérés pour générer une réponse.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Question    : Quelle est la différence entre chunking fixe et chunking récursif ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : langchain_notes.md, intro_rag.txt, https://en.wikipedia.org/wiki/Retrieval-augmented_generation
+
+  Réponse :
+     ---
+    **Réponse**
+    Le chunking fixe découpe les documents en chunks prédéfinis, tel que des phrases ou des paragraphes. Cette approche est plus simple mais peut ne pas prendre en compte la structure du texte. Le chunking récursif, quant à lui, essaie de couper aux séparateurs naturels (paragraphes, lignes, phrases) avant de couper au niveau des caractères. Il permet donc d'extraire des chunks plus finis qui sont plus susceptibles de correspondre aux informations demandées par l'utilisateur.
+    
+    **Sources**
+    - [1] Text Splitters section
+    
+    **Limites / Incertitudes**
+    Il n'est pas précisé dans le contexte si d'autres types de chunking existent ou non, mais le contexte ne permet pas de confirmer que ce serait le cas.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Question    : En résumé, quelle stratégie recommandes-tu d'après ta première réponse ?
+  Enrichie    : Quelle est la différence entre chunking fixe et chunking récursif ? En résumé, quelle stratégie reco
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le `RecursiveCharacterTextSplitter` est la méthode de découpage des documents en chunks la plus recommandée pour le texte générique dans un pipeline RAG. Cela permet au système d'essayer de couper aux séparateurs naturels (paragraphes, lignes, phrases) avant de couper au niveau des caractères [2].
+    
+    **Sources**
+    [2] (markdown) langchain_notes.md
+    
+    **Limites / Incertitudes**
+    Cette réponse n'indique pas quelle stratégie est la meilleure pour tous les types de documents ou corpus particuliers, car des facteurs tels que la taille du document, sa nature et son contenu peuvent avoir un impact sur l'efficacité de différentes méthodes de découpage.
+
+────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════
+  VAL4 — Robustesse — hors-périmètre résiste après historique valide
+  Après 2 tours valides (RAG), une question clairement hors-périmètre doit toujours être rejetée (la continuité ne protège pas les questions non-suivis explicitement hors-domaine).
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Question    : Comment fonctionne le retrieval par similarité cosinus dans ChromaDB ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    Le retrieval par similarité cosinus dans ChromaDB mesure le cosinus de l'angle entre les vecteurs de la requête et des chunks de documents. C'est une stratégie de base pour récupérer des documents pertinents, rapide et efficace pour la plupart des cas [1].
+    
+    **Sources**
+    [1] intro_rag.txt
+    
+    ---
+    **Limites / Incertitudes**
+    Ce contexte ne précise pas comment les vecteurs sont générés ni leur taille, qui pourraient être importants pour comprendre le processus de similarité cosinus. Il n'y a également aucune information sur le traitement des documents dans la base de données vectorielle ChromaDB.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Question    : Quels sont les avantages de la persistance locale du vectorstore ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : accepté ✓
+  APRÈS fix   : ACCEPTÉ ✓
+  Docs récup. : 4
+  Sources     : intro_rag.txt, langchain_notes.md
+
+  Réponse :
+     ---
+    **Réponse**
+    La persistance locale du vectorstore dans ChromaDB présente plusieurs avantages. Tout d'abord, elle permet d'éviter les délais de latence liés à l'utilisation d'une infrastructure cloud, ce qui peut améliorer la performance du système [2]. En outre, la persistance locale offre une plus grande sécurité et confidentialité car les données sont stockées sur place plutôt que dans des serveurs externes.
+    
+    **Sources**
+    [2] (text) intro_rag.txt
+    ChromaDB
+    ...
+    Sa simplicité d'intégration avec LangChain en fait un choix populaire pour les projets académiques et les prototypes.
+    
+    ---
+    **Limites / Incertitudes**
+    Il n'y a pas de mention dans le contexte fourni concernant une possibilité de traiter plus rapidement des données avec la persistance locale du vectorstore par rapport à l'utilisation d'une infrastructure cloud, ce qui est suggéré dans la réponse.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Question    : Quelle est la capitale de la France et quelle est sa population ?
+  Enrichie    : (non — question explicite)
+  AVANT fix   : REJETÉ ✗
+  APRÈS fix   : rejeté (attendu)
+  Docs récup. : 0
+  Sources     : —
+
+  Réponse :
+    **Réponse**
+    Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).
+    Je ne peux pas répondre de manière fiable sans source pertinente.
+    
+    **Sources**
+    Aucune source pertinente récupérée.
+    
+    **Limites / Incertitudes**
+    Le corpus actuel ne contient pas d'information suffisamment liée à cette question.
+
+────────────────────────────────────────────────────────────────────────
+
+════════════════════════════════════════════════════════════════════════
+  RÉSUMÉ
+════════════════════════════════════════════════════════════════════════
+
+  Tours totaux            : 12
+  Faux rejets corrigés    : 2 (suivi rejeté AVANT, accepté APRÈS)
+  Faux négatifs introduits: 0 (hors-périmètre passé à tort)

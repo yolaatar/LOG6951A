@@ -1,0 +1,35 @@
+════════════════════════════════════════════════════════════════════════
+  EC1 — Requête ambiguë / sous-spécifiée
+  Catégorie : edge_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Comment améliorer les résultats ?
+
+  Notes : Requête non-spécifique : risque de réponse générique, citation absente, hallucination sur ce que signifie 'améliorer'.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 0
+    Sources uniques : 0
+    Citation [N]    : Non
+    Structure 3 sec.: Oui
+    Ancrage         : 0.000  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Oui
+    Verdict         : retrieval vide
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (0)
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+  **Réponse**
+  Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).
+  Je ne peux pas répondre de manière fiable sans source pertinente.
+  
+  **Sources**
+  Aucune source pertinente récupérée.
+  
+  **Limites / Incertitudes**
+  Le corpus actuel ne contient pas d'information suffisamment liée à cette question.

@@ -1,0 +1,76 @@
+════════════════════════════════════════════════════════════════════════
+  DIAL2 — Dialogue technique — chunking (3 tours)
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Utilisateur : Quels sont les paramètres importants à configurer dans une stratégie de chunking pour RAG ?
+
+  Métriques :
+    Citation : Non  |  Structure : NOK  |  Docs : 4  |  Ancrage : 0.78  |  Réf. hist. : Oui
+
+  ResearchPal :
+     ---
+    **Réponse**
+    Le RAG (Retrieval-Augmented Generation) est une architecture qui améliore les modèles de langage en leur permettant d'accéder à des informations externes au moment de la génération. Pour un système RAG, il y a plusieurs paramètres clés à configurer dans une stratégie de chunking (découpage de textes).
+    
+    Les `TextSplitter` découpent les documents en chunks avant leur vectorisation. Le `RecursiveCharacterTextSplitter` est le plus recommandé pour du texte générique. Les paramètres importants à configurer sont la taille maximale d'un chunk (`chunk_size`), le nombre de caractères partagés entre deux chunks adjacents (`chunk_overlap`) et une liste ordonnée des séparateurs à tester (`separators`).
+    
+    Sources:
+    1. [intro_rag.txt]
+    2. [intro_rag.txt]
+    4. [markdown] langchain_notes.md
+    
+    Limites / Incertitudes:
+    Il n'est pas mentionné dans le contexte si il existe des paramètres supplémentaires pour optimiser les performances d'un système RAG, comme cela est indiqué dans la section "Optimisation du RAG" de l'introduction au RAG. De même, aucune information n'est fournie sur la manière dont le LLM (Modèle de langage) choisit les chunks pertinents pour répondre aux questions posées par les utilisateurs.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Utilisateur : Quelle est la différence entre le chunking fixe et le chunking récursif ?
+
+  Métriques :
+    Citation : Oui  |  Structure : OK  |  Docs : 4  |  Ancrage : 0.83  |  Réf. hist. : Non
+
+  ResearchPal :
+     ---
+    **Réponse**
+    Le chunking fixe et le chunking récursif sont deux méthodes utilisées dans l'architecture RAG (Retrieval-Augmented Generation) pour découper des documents en chunks avant leur vectorisation.
+    
+    Le chunking fixe se réfère à une méthode de découpage où les documents sont coupés en chunks de taille prédéfinie, sans aucune variabilité. En revanche, le chunking récursif essaie de couper aux séparateurs naturels (paragraphes, lignes, phrases) avant de couper au niveau des caractères, ce qui permet une meilleure segmentation du document [1].
+    
+    Les paramètres clés dans le chunking récursif sont `chunk_size` (taille maximale d'un chunk en caractères), `chunk_overlap` (nombre de caractères partagés entre deux chunks adjacents) et `separators` (liste ordonnée des séparateurs à tester) [1].
+    
+    **Sources**
+    [1] langchain_notes.md
+    
+    **Limites / Incertitudes**
+    Les informations fournies sont issues de sources externes, il est donc possible que certaines données aient pu être modifiées ou perdues après la publication originale de ces textes.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Utilisateur : Sur la base de ce que tu as expliqué, quel impact a précisément le chevauchement (overlap) sur la qualité des réponses générées par le LLM ?
+
+  Métriques :
+    Citation : Oui  |  Structure : OK  |  Docs : 4  |  Ancrage : 0.67  |  Réf. hist. : Oui
+
+  ResearchPal :
+     ---
+    **Réponse**
+    En utilisant un pipeline RAG (Retrieval-Augmented Generation), l'impact du chevauchement entre les chunks récupérés pour augmenter la qualité des réponses générées par le LLM (Langage de Langue Machine) est significatif.
+    
+    Cela peut être expliqué en considérant que, lorsque plusieurs chunks se chevauchent sur une même question, ils fournissent plus d'informations pertinentes au LLM pour générer des réponses plus précises et détaillées. Cette stratégie est utilisée dans la phase de retrieval du pipeline RAG pour maximiser le rappel (recall).
+    
+    Le chevauchement entre les chunks peut également aider à réduire la probabilité d'hallucinations, car il s'agit de données vérifiables fournies au moment de la requête.
+    
+    Pour maximiser le chevauchement entre les chunks lors du découpage des documents en chunks, on peut utiliser différentes stratégies telles que chunking fixe et chunking récursif.
+    ---
+    **Sources**
+    [3] (markdown) langchain_notes.md
+    
+    ---
+    **Limites / Incertitudes**
+    Cette réponse est basée sur la compréhension de l'utilisateur de la manière dont le chevauchement entre les chunks peut améliorer la qualité des réponses du LLM. En fait, il n'est pas possible de confirmer à 100% que ce mécanisme est utilisé dans tous les systèmes RAG, car chaque implémentation peut être différente.
+
+────────────────────────────────────────────────────────────────────────
+

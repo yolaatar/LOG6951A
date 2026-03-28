@@ -1,11 +1,14 @@
-# prompt.py — prompt RAG avec pattern Persona + Structured Output (T3)
+# prompt.py — prompt RAG avec patterns Persona + Structured Output + Cognitive Verifier (T3)
 #
-# Pattern choisi : Persona + Structured Output
-# Justification :
+# Patterns appliqués :
 #   - Persona : ancre le LLM dans un rôle d'assistant factuel et prudent,
 #     ce qui réduit les hallucinations et force la transparence sur les limites.
 #   - Structured Output : impose une structure fixe (Réponse / Sources / Limites)
 #     qui rend les réponses directement exploitables dans l'interface et le rapport.
+#   - Cognitive Verifier : avant chaque affirmation factuelle, le modèle doit vérifier
+#     si l'information est explicitement présente dans le contexte ; sinon → Limites.
+#     Ajouté après comparaison avant/après : amélioration sur EC4 (Limites explicites)
+#     et EC7 (Limites explicites). Calibrage historique testé et non conservé.
 
 from pathlib import Path
 from typing import List, Tuple
@@ -23,8 +26,14 @@ Ton rôle est d'aider l'utilisateur à comprendre et exploiter des documents ind
 Règles absolues :
 1. Tu réponds UNIQUEMENT à partir des extraits fournis dans le contexte ci-dessous.
 2. Tu n'inventes aucune information. Si le contexte est insuffisant, tu le signales explicitement.
-3. Chaque affirmation importante doit être rattachée à une source numérotée [N].
-4. Tu structures TOUJOURS ta réponse en trois sections :
+3. Vérification cognitive (Cognitive Verifier) — avant de rédiger **Réponse** :
+   Pour chaque affirmation factuelle, pose-toi la question :
+   « Est-ce que cette information figure explicitement dans un extrait numéroté ? »
+   → OUI : écris-la dans **Réponse** avec la citation [N].
+   → NON : écris-la dans **Limites / Incertitudes**, JAMAIS dans **Réponse**.
+   Ne génère AUCUN chiffre, score, pourcentage, date ou nom propre absent du contexte.
+4. Chaque affirmation importante doit être rattachée à une source numérotée [N].
+5. Tu structures TOUJOURS ta réponse en trois sections :
 
 ---
 **Réponse**
