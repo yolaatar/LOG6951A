@@ -54,6 +54,28 @@ with st.sidebar:
 
     st.markdown("---")
 
+    st.subheader("Gestion du contexte")
+    context_mode = st.radio(
+        "Mode",
+        options=["Aucun", "Heuristiques", "Concaténation", "Réécriture (LLM)"],
+        index=0,
+        help=(
+            "**Aucun** : question brute pour le retrieval. "
+            "Les 3 derniers tours sont quand même passés au LLM.\n\n"
+            "**Heuristiques** : détection de coréférence + enrichissement "
+            "de la requête par le sujet du dernier tour in-scope.\n\n"
+            "**Concaténation** : préfixe les 2 dernières questions "
+            "in-scope à la requête (sans appel LLM supplémentaire).\n\n"
+            "**Réécriture (LLM)** : le modèle reformule la question "
+            "en version autonome avant le retrieval (+1 appel LLM)."
+        ),
+    )
+    use_heuristic_context = (context_mode == "Heuristiques")
+    use_concat_context    = (context_mode == "Concaténation")
+    use_query_rewriting   = (context_mode == "Réécriture (LLM)")
+
+    st.markdown("---")
+
     # ── ajout de documents ────────────────────────────────────────────────
     st.subheader("Ajouter des documents")
     uploaded = st.file_uploader(
@@ -141,6 +163,9 @@ if prompt := st.chat_input("Votre question..."):
                         prompt,
                         strategy=strategy,
                         use_multiquery=use_multiquery,
+                        use_heuristic_context=use_heuristic_context,
+                        use_concat_context=use_concat_context,
+                        use_query_rewriting=use_query_rewriting,
                     )
                     st.markdown(result.answer)
                     if result.sources:

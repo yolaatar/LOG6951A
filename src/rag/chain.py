@@ -21,6 +21,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+from langchain_core.messages import HumanMessage, SystemMessage
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from langchain_core.documents import Document
@@ -52,6 +54,7 @@ class RAGResult:
     retrieved_documents: List[Document]
     query_variants: List[str] = field(default_factory=list)
     strategy: str = "cosine"
+    retrieval_query: str = ""   # requête effective utilisée pour le retrieval
 
 
 # ── LLM ─────────────────────────────────────────────────────────────────────
@@ -231,6 +234,86 @@ class RAGPipeline:
 
         return enriched, True
 
+    # ── concaténation avec l'historique ──────────────────────────────────────
+
+    def _concat_query_with_history(self, question: str) -> str:
+        """
+        Construit la requête de retrieval en préfixant les questions des derniers
+        tours in-scope (had_retrieval=True) à la question courante.
+
+        Stratégie sans appel LLM : on concatène les 2 dernières questions
+        utilisateur ayant eu un vrai retrieval pour ancrer l'embedding dans le
+        sujet de la conversation, sans diluer le vecteur avec des réponses longues.
+
+        Si aucun tour in-scope n'existe, retourne la question brute.
+        """
+        recent_questions = [
+            t.question for t in self.memory.get_history()[-2:]
+            if t.had_retrieval
+        ]
+        if not recent_questions:
+            return question
+
+        prefix = " ".join(recent_questions)
+        concat = f"{prefix} {question}"
+
+        if DEBUG_TRACE:
+            print(f"[trace] QUERY_CONCAT: '{question[:60]}' → '{concat[:100]}'")
+
+        return concat
+
+    # ── réécriture de requête via LLM ─────────────────────────────────────────
+
+    def _rewrite_query_with_llm(self, question: str) -> str:
+        """
+        Demande au LLM de réécrire la question pour qu'elle soit autonome,
+        en incorporant le contexte nécessaire des tours précédents.
+
+        Si la mémoire est vide ou la question est déjà autonome, retourne
+        la question originale. En cas d'erreur LLM, retourne la question originale.
+
+        La requête réécrite est utilisée pour le retrieval uniquement ;
+        la question originale est toujours envoyée au LLM pour la génération
+        (l'historique injecté dans le system prompt suffit à résoudre les anaphores).
+        """
+        turns = self.memory.format_history_for_prompt()
+        if not turns:
+            return question
+
+        # Limiter aux 3 derniers tours pour ne pas surcharger le contexte de réécriture
+        recent = turns[-3:]
+        history_lines = []
+        for q, a in recent:
+            a_short = a[:200] + "…" if len(a) > 200 else a
+            history_lines.append(f"Utilisateur : {q}\nAssistant : {a_short}")
+        history_str = "\n\n".join(history_lines)
+
+        messages = [
+            SystemMessage(content=(
+                "Tu es un assistant de reformulation de questions. "
+                "Réécris la question de l'utilisateur pour qu'elle soit complète et autonome, "
+                "sans référence implicite à l'historique (pronoms, démonstratifs, ellipses). "
+                "Incorpore dans la question les éléments nécessaires tirés de l'historique. "
+                "Si la question est déjà autonome, retourne-la inchangée. "
+                "Retourne UNIQUEMENT la question réécrite, sans explication ni commentaire."
+            )),
+            HumanMessage(content=(
+                f"Historique de la conversation :\n{history_str}\n\n"
+                f"Question à réécrire : {question}"
+            )),
+        ]
+
+        try:
+            response = self.llm.invoke(messages)
+            rewritten = response.content.strip() if hasattr(response, "content") else str(response).strip()
+            if not rewritten or len(rewritten) > 500:
+                return question
+            if DEBUG_TRACE:
+                print(f"[trace] QUERY_REWRITE: '{question[:60]}' → '{rewritten[:80]}'")
+            return rewritten
+        except Exception:
+            return question
+
     # ── retrieval ────────────────────────────────────────────────────────────
 
     def _retrieve(self, retrieval_query: str, strategy: str, use_multiquery: bool):
@@ -259,20 +342,42 @@ class RAGPipeline:
         question: str,
         strategy: str = "cosine",
         use_multiquery: bool = False,
+        use_heuristic_context: bool = False,
+        use_query_rewriting: bool = False,
+        use_concat_context: bool = False,
     ) -> "RAGResult":
         """
-        Répond à une question en 6 étapes history-aware :
+        Répond à une question en 6 étapes, avec trois approches optionnelles
+        de gestion du contexte conversationnel pour le retrieval
+        (mutuellement exclusives, priorité : rewriting > heuristique > concat) :
 
-          1. Enrichissement de la requête de retrieval avec le contexte historique
-          2. Score cosinus sur la requête enrichie (pas la question brute)
-          3. Décision out-of-scope : score + domaine + continuité conversationnelle
-          4. Retrieval sur la requête enrichie
-          5. Génération LLM avec la question originale (pas la requête enrichie)
-          6. Stockage en mémoire avec had_retrieval=True/False
+          - use_query_rewriting   : LLM reformule la question en version autonome.
+          - use_heuristic_context : enrichissement par coréférence + continuité.
+          - use_concat_context    : préfixe les 2 dernières questions in-scope.
+          - (aucun)               : question brute — historique dans prompt LLM seulement.
+
+        Dans tous les modes, les 3 derniers tours de conversation sont injectés
+        dans le prompt LLM (résolution d'anaphores côté génération).
+
+          1. Construction de la requête de retrieval
+          2. Score cosinus sur la requête
+          3. Décision out-of-scope (topic_continuity uniquement en mode heuristique)
+          4. Retrieval
+          5. Génération LLM avec la question originale + historique (3 derniers tours)
+          6. Stockage en mémoire
         """
 
-        # ── Étape 1 : enrichissement de la requête ───────────────────────────
-        retrieval_query, was_enriched = self._build_retrieval_query(question)
+        # ── Étape 1 : construction de la requête de retrieval ─────────────────
+        if use_query_rewriting:
+            retrieval_query = self._rewrite_query_with_llm(question)
+            was_enriched = False
+        elif use_heuristic_context:
+            retrieval_query, was_enriched = self._build_retrieval_query(question)
+        elif use_concat_context:
+            retrieval_query = self._concat_query_with_history(question)
+            was_enriched = False
+        else:
+            retrieval_query, was_enriched = question, False
 
         # ── Étape 2 : score de pertinence sur la requête enrichie ─────────────
         best_score = None
@@ -296,7 +401,11 @@ class RAGPipeline:
         # Sans (c), UC4 / EC5 et toutes les questions de suivi implicites
         # seraient incorrectement rejetées.
 
-        topic_continuity = was_enriched and self.memory.recent_had_retrieval(window=2)
+        topic_continuity = (
+            use_heuristic_context
+            and was_enriched
+            and self.memory.recent_had_retrieval(window=2)
+        )
 
         out_of_scope = (
             best_score is not None
@@ -306,10 +415,14 @@ class RAGPipeline:
         )
 
         if DEBUG_TRACE:
+            mode = ("query_rewriting" if use_query_rewriting
+                    else "heuristic" if use_heuristic_context
+                    else "none")
             print(f"\n[trace] USER_PROMPT: {question}")
+            print(f"[trace] CONTEXT_MODE: {mode}")
             print(f"[trace] RETRIEVAL_QUERY: {retrieval_query[:100]}")
             if best_score is not None:
-                print(f"[trace] BEST_COSINE_SCORE (enriched): {best_score:.4f}")
+                print(f"[trace] BEST_COSINE_SCORE: {best_score:.4f}")
             print(f"[trace] WAS_ENRICHED={was_enriched}  "
                   f"TOPIC_CONTINUITY={topic_continuity}  "
                   f"OUT_OF_SCOPE={out_of_scope}")
@@ -340,17 +453,19 @@ class RAGPipeline:
                 retrieved_documents=[],
                 query_variants=[],
                 strategy=("multiquery+" if use_multiquery else "") + strategy,
+                retrieval_query=retrieval_query,
             )
 
         # ── Étape 4 : retrieval sur la requête enrichie ───────────────────────
         docs, variants = self._retrieve(retrieval_query, strategy, use_multiquery)
 
         # ── Étape 5 : génération LLM avec la question originale ───────────────
-        # Important : le LLM reçoit la question originale (pronoms inclus),
-        # pas la requête enrichie. L'historique injecté dans le prompt fournit
-        # le contexte suffisant pour résoudre les anaphores.
+        # Le LLM reçoit la question originale (pronoms inclus), pas la requête
+        # enrichie/réécrite. Les 3 derniers tours d'historique sont injectés dans
+        # le prompt pour la résolution des anaphores, quel que soit le mode de
+        # gestion de contexte actif.
         context = format_context(docs)
-        history = self.memory.format_history_for_prompt()
+        history = self.memory.format_history_for_prompt()[-3:]
         prompt = build_rag_prompt(history=history)
         chain = prompt | self.llm
 
@@ -387,6 +502,7 @@ class RAGPipeline:
             retrieved_documents=docs,
             query_variants=variants,
             strategy=strat_label,
+            retrieval_query=retrieval_query,
         )
 
     def reset_memory(self) -> None:
@@ -415,13 +531,19 @@ def answer_question(
     question: str,
     strategy: str = "cosine",
     use_multiquery: bool = False,
+    use_heuristic_context: bool = False,
+    use_query_rewriting: bool = False,
+    use_concat_context: bool = False,
     pipeline: Optional[RAGPipeline] = None,
 ) -> RAGResult:
     """Répond via le pipeline RAG (utilise le singleton si pipeline=None)."""
     p = pipeline or _pipeline
     if p is None:
         raise RuntimeError("Pipeline non initialisé. Appelez build_rag_pipeline() d'abord.")
-    return p.answer(question, strategy=strategy, use_multiquery=use_multiquery)
+    return p.answer(question, strategy=strategy, use_multiquery=use_multiquery,
+                    use_heuristic_context=use_heuristic_context,
+                    use_query_rewriting=use_query_rewriting,
+                    use_concat_context=use_concat_context)
 
 
 # stub de compatibilité
