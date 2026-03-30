@@ -1,0 +1,89 @@
+Query 5 — Cas limite / requête ambiguë
+════════════════════════════════════════════════════════════════════════
+  What are the limitations of local language models for enterprise use?
+
+  Rationale: Sujet hors-corpus principal. Permet d'observer le comportement des retrievers quand la requête est mal couverte.
+
+  Parameters: k=4  fetch_k=20  λ=0.5
+────────────────────────────────────────────────────────────────────────
+
+  ── COSINE (baseline)
+     Sources   : 2  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'langchain_notes.md']
+     Intra sim : 0.388  (embedding redundancy)
+     Jaccard   : 0.044  (lexical redundancy)
+     Scores    : top1=0.091  mean=0.055  spread=0.077
+
+     [1] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=5f2319be59165078  score=0.091
+         . pp. 8371–8384. arXiv:2301.12652. doi:10.18653/v1/2024.naacl-
+         long.463. Retrieved 16 March 2025. ^ Ram, Ori; Levine, Yoav;
+         Dalmedigos, Itay; Muhlgay, Dor; Shashua, Amnon; Leyton-Brown,
+         Kevin; Shoham, Yoav (2023). "In-Context Retrieval-Augmented
+         Language Models". Transactions of the Association for C
+
+     [2] langchain_notes.md              markdown    id=9999176960b211a7  score=0.085
+         # Notes sur LangChain pour le projet ResearchPal  ## Qu'est-ce
+         que LangChain ?  LangChain est un framework Python (et
+         JavaScript) conçu pour faciliter le développement
+         d'applications basées sur des modèles de langage (LLM). Il
+         fournit des abstractions et des outils pour composer des
+         chaînes de trait
+
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=103733412631d07e  score=0.029
+         . Black-lettered boxes show data being changed, and blue
+         lettering shows the algorithm performing the changes. By
+         redesigning the language model with the retriever in mind, a
+         25-time smaller network can get comparable perplexity as its
+         much larger counterparts.[14] Because it is trained from
+         scratch
+
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=f609018d443da254  score=0.014
+         . "Shall We Pretrain Autoregressive Language Models with
+         Retrieval? A Comprehensive Study". Proceedings of the 2023
+         Conference on Empirical Methods in Natural Language Processing.
+         pp. 7763–7786. doi:10.18653/v1/2023.emnlp-main.482. ^
+         Yesilyurt, Metehan (November 11, 2025). "SEO vs. AI search: 101
+         qu
+
+  ── MMR
+     Sources   : 2  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'langchain_notes.md']
+     Intra sim : 0.245  (embedding redundancy)
+     Jaccard   : 0.008  (lexical redundancy)
+
+     [1] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=5f2319be59165078
+         . pp. 8371–8384. arXiv:2301.12652. doi:10.18653/v1/2024.naacl-
+         long.463. Retrieved 16 March 2025. ^ Ram, Ori; Levine, Yoav;
+         Dalmedigos, Itay; Muhlgay, Dor; Shashua, Amnon; Leyton-Brown,
+         Kevin; Shoham, Yoav (2023). "In-Context Retrieval-Augmented
+         Language Models". Transactions of the Association for C
+
+     [2] langchain_notes.md              markdown    id=9999176960b211a7
+         # Notes sur LangChain pour le projet ResearchPal  ## Qu'est-ce
+         que LangChain ?  LangChain est un framework Python (et
+         JavaScript) conçu pour faciliter le développement
+         d'applications basées sur des modèles de langage (LLM). Il
+         fournit des abstractions et des outils pour composer des
+         chaînes de trait
+
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=9c7f47231a0b646e
+         Speech recognition Whisper Facial recognition AlphaFold Text-
+         to-image models Aurora DALL-E Firefly Flux GPT Image Ideogram
+         Imagen Midjourney Recraft Stable Diffusion Text-to-video models
+         Dream Machine Runway Gen Hailuo AI Kling Sora Seedance Veo
+         Music generation Riffusion Suno Udio Text Word2vec Seq
+
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=ca8420e58189edb9
+         . These documents supplement information from the LLM's pre-
+         existing training data.[2] This allows LLMs to use domain-
+         specific and/or updated information that is not available in
+         the training data.[2] For example, this helps LLM-based
+         chatbots access internal company data or generate responses
+         based
+
+  ── OVERLAP ANALYSIS
+     Shared chunks     : 2/4  (overlap_ratio=0.50)
+     Mean rank shift   : 0.00 positions
+
+  ── OBSERVATION
+     Source delta  : +0  (same coverage)
+     Intra sim Δ   : -0.143  (MMR less redundant)
+     [Write your qualitative notes here]

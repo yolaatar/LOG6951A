@@ -1,0 +1,86 @@
+Query 4 — Question précise / mot-clé rare
+════════════════════════════════════════════════════════════════════════
+  What is chunk_id and how is it computed in the ingestion pipeline?
+
+  Rationale: Requête précise sur un concept interne au corpus. Cas intéressant où fetch_k de MMR peut aider ou non selon la densité du corpus.
+
+  Parameters: k=4  fetch_k=20  λ=0.5
+────────────────────────────────────────────────────────────────────────
+
+  ── COSINE (baseline)
+     Sources   : 3  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'intro_rag.txt', 'langchain_notes.md']
+     Intra sim : 0.580  (embedding redundancy)
+     Jaccard   : 0.037  (lexical redundancy)
+     Scores    : top1=0.205  mean=0.068  spread=0.272
+
+     [1] intro_rag.txt                   text        id=6858a2d190be23ed  score=0.205
+         Architecture typique d'un système RAG Un pipeline RAG complet
+         comprend les étapes suivantes :  1. Ingestion — Les documents
+         source (PDF, pages web, textes) sont découpés en chunks,
+         vectorisés avec un modèle d'embeddings, puis stockés dans une
+         base vectorielle.  2. Retrieval — Lorsqu'un utilisateu
+
+     [2] langchain_notes.md              markdown    id=36c4cd7c267dda4b  score=0.082
+         ### Text Splitters Les `TextSplitter` découpent les documents
+         en chunks avant leur vectorisation. Le
+         `RecursiveCharacterTextSplitter` est le plus recommandé pour le
+         texte générique : il essaie de couper aux séparateurs naturels
+         (paragraphes, lignes, phrases) avant de couper au niveau des
+         caractères.
+
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=10da5c1ad422961b  score=0.052
+         . The redesigned language model is shown here. It has been
+         reported that Retro is not reproducible, so modifications were
+         made to make it so. The more reproducible version is called
+         Retro++ and includes in-context RAG.[15] Chunking[edit]
+         Chunking involves various strategies for breaking up the data
+
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=bdf6366fc31309ce  score=-0.068
+         . Newer implementations (as of 2023[update]) can also
+         incorporate specific augmentation modules with abilities such
+         as expanding queries into multiple domains and using memory and
+         self-improvement to learn from previous retrievals. Finally,
+         the LLM can generate output based on both the query and the
+
+  ── MMR
+     Sources   : 3  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'intro_rag.txt', 'langchain_notes.md']
+     Intra sim : 0.221  (embedding redundancy)
+     Jaccard   : 0.029  (lexical redundancy)
+
+     [1] intro_rag.txt                   text        id=6858a2d190be23ed
+         Architecture typique d'un système RAG Un pipeline RAG complet
+         comprend les étapes suivantes :  1. Ingestion — Les documents
+         source (PDF, pages web, textes) sont découpés en chunks,
+         vectorisés avec un modèle d'embeddings, puis stockés dans une
+         base vectorielle.  2. Retrieval — Lorsqu'un utilisateu
+
+     [2] langchain_notes.md              markdown    id=b47441a139a18e36
+         ## Ollama et les LLM locaux  `ChatOllama` (via `langchain-
+         ollama`) est le client officiel pour les modèles Ollama.
+         Configuration minimale :  ```python from langchain_ollama
+         import ChatOllama llm = ChatOllama(model="mistral:7b-instruct",
+         base_url="http://localhost:11434") ```  Avant utilisation : `ol
+
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=c2e3504c7850f1bf
+         . For example, LLMs can generate misinformation even when
+         pulling from factually correct sources if they misinterpret the
+         context. MIT Technology Review gives the example of an AI-
+         generated response stating, "The United States has had one
+         Muslim president, Barack Hussein Obama." The model retrieved
+
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=a1adb0fa63e553d7
+         . Sparse vectors, which encode the identity of a word, are
+         typically dictionary-length and contain mostly zeros. Dense
+         vectors, which encode meaning, are more compact and contain
+         fewer zeros. Various enhancements can improve the way
+         similarities are calculated in the vector stores
+         (databases).[7] Pe
+
+  ── OVERLAP ANALYSIS
+     Shared chunks     : 1/4  (overlap_ratio=0.25)
+     Mean rank shift   : 0.00 positions
+
+  ── OBSERVATION
+     Source delta  : +0  (same coverage)
+     Intra sim Δ   : -0.359  (MMR less redundant)
+     [Write your qualitative notes here]
