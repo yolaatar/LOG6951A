@@ -1,16 +1,17 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # ResearchPal — requirements.txt
 #
-# Toutes les dépendances nécessaires pour le project RAG.
-# Installez avec :  pip install -r requirements.txt
+# Stratégie de versionnement : contraintes >= pour maximiser la compatibilité
+# tout en évitant les régressions connues. Testé avec Python 3.11.
 #
-# Note : langchain-community contient les loaders (PyPDFLoader, WebBaseLoader).
-#        langchain-chroma est le package officiel d'intégration Chroma.
-#        langchain-huggingface remplace l'ancien HuggingFaceEmbeddings de community.
-#        langchain-ollama est l'intégration officielle ChatOllama.
+# Installation :  pip install -r requirements.txt
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── LangChain (core + intégrations) ──────────────────────────────────────────
+# langchain-community : loaders (PyPDFLoader, WebBaseLoader)
+# langchain-chroma    : intégration officielle ChromaDB
+# langchain-huggingface : HuggingFaceEmbeddings (remplace community)
+# langchain-ollama    : ChatOllama (client local Mistral)
 langchain>=0.3.0
 langchain-core>=0.3.0
 langchain-community>=0.3.0
@@ -29,13 +30,18 @@ sentence-transformers>=3.0.0
 pypdf>=4.0.0
 
 # ── Chargement de pages web ───────────────────────────────────────────────────
-# beautifulsoup4 est utilisé par WebBaseLoader
 beautifulsoup4>=4.12.0
 requests>=2.31.0
 
 # ── Interface utilisateur ─────────────────────────────────────────────────────
 streamlit>=1.38.0
 
+# ── Scripts d'évaluation ─────────────────────────────────────────────────────
+# numpy et matplotlib sont requis par src/evaluation/ (chunking_analysis,
+# retrieval_eval, rag_eval). Absent du requirements initial — ajoutés ici.
+numpy>=1.26.0
+matplotlib>=3.8.0
+
 # ── Utilitaires ───────────────────────────────────────────────────────────────
-python-dotenv>=1.0.0    # Optionnel : pour stocker des variables d'env dans .env
-tqdm>=4.66.0            # Barres de progression (utile pour l'ingestion en lot)
+tqdm>=4.66.0            # barres de progression (sentence-transformers, ingestion)
+python-dotenv>=1.0.0    # support optionnel .env pour surcharger la config
