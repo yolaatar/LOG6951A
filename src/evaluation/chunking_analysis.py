@@ -582,117 +582,6 @@ def _save(fig: plt.Figure, name: str) -> None:
     print(f"  [figure] {name}")
 
 
-def fig_chunk_length_histograms(
-    strategy_chunks: Dict[str, List[Document]],
-) -> None:
-    """Histogramme des longueurs de chunks par stratégie."""
-    valid = {k: v for k, v in strategy_chunks.items() if v}
-    n     = len(valid)
-    if not n:
-        return
-
-    fig, axes = plt.subplots(1, n, figsize=(5 * n, 4), sharey=False)
-    if n == 1:
-        axes = [axes]
-
-    for ax, (label, chunks) in zip(axes, valid.items()):
-        lengths = [len(c.page_content) for c in chunks]
-        mu, sd  = np.mean(lengths), np.std(lengths)
-
-        ax.hist(lengths, bins=25, color=_color(label), edgecolor="white",
-                alpha=0.88, linewidth=0.5)
-        ax.axvline(mu, color="black",  lw=1.6, linestyle="--",
-                   label=f"μ = {mu:.0f}")
-        ax.axvline(mu + sd, color="gray", lw=1.0, linestyle=":",
-                   label=f"σ = {sd:.0f}")
-        ax.axvline(mu - sd, color="gray", lw=1.0, linestyle=":")
-        ax.axvline(PRIMARY_CHUNK_SIZE, color="red", lw=1.0, linestyle="-.",
-                   alpha=0.5, label=f"taille max = {PRIMARY_CHUNK_SIZE}")
-
-        ax.set_title(_FR_STRAT.get(label, label), fontsize=12, fontweight="bold")
-        ax.set_xlabel("Longueur (caractères)", fontsize=10)
-        ax.set_ylabel("Effectif", fontsize=10)
-        ax.legend(fontsize=8, loc="upper left")
-        ax.spines[["top", "right"]].set_visible(False)
-
-    fig.suptitle("Distribution des longueurs de chunks par stratégie",
-                 fontsize=13, fontweight="bold", y=1.02)
-    plt.tight_layout()
-    _save(fig, "chunk_length_distributions.png")
-
-
-def fig_strategy_comparison(
-    metrics_list: List[Dict],
-    retrieval_results: Dict[str, Dict],
-) -> None:
-    """Graphique comparatif multi-panneaux entre stratégies de chunking."""
-    valid     = [m for m in metrics_list if m.get("n_chunks", 0) > 0]
-    labels    = [m["label"] for m in valid]
-    labels_fr = [_FR_STRAT.get(l, l) for l in labels]
-    colors    = [_color(l) for l in labels]
-
-    if not valid:
-        return
-
-    def bar_panel(ax, values, title, ylabel, fmt=".0f", invert=False):
-        bars = ax.bar(labels_fr, values, color=colors, edgecolor="white",
-                      width=0.55, linewidth=0.8)
-        for b, v in zip(bars, values):
-            ax.text(b.get_x() + b.get_width() / 2,
-                    b.get_height() + max(values) * 0.015,
-                    f"{v:{fmt}}", ha="center", va="bottom", fontsize=8.5)
-        ax.set_title(title, fontsize=9.5, fontweight="bold")
-        ax.set_ylabel(ylabel, fontsize=8.5)
-        ax.set_xticks(range(len(labels_fr)))
-        ax.set_xticklabels(labels_fr, fontsize=9, rotation=10)
-        ax.spines[["top", "right"]].set_visible(False)
-        if invert:
-            ax.invert_yaxis()
-
-    fig = plt.figure(figsize=(15, 9))
-    gs  = gridspec.GridSpec(2, 3, figure=fig, hspace=0.55, wspace=0.42)
-
-    bar_panel(fig.add_subplot(gs[0, 0]),
-              [m["n_chunks"] for m in valid],
-              "Nombre de chunks", "Effectif")
-
-    ax2 = fig.add_subplot(gs[0, 1])
-    bar_panel(ax2, [m["avg_len"] for m in valid],
-              "Longueur moyenne des chunks", "Caractères", ".0f")
-    ax2.axhline(PRIMARY_CHUNK_SIZE, color="red", lw=1.2, linestyle="--",
-                alpha=0.6, label=f"taille max = {PRIMARY_CHUNK_SIZE}")
-    ax2.legend(fontsize=7.5, loc="upper right")
-
-    ax3 = fig.add_subplot(gs[0, 2])
-    vals3 = [m["mid_end_pct"] for m in valid]
-    bar_panel(ax3, vals3,
-              "Fins de phrase tronquées ↓ (bas = mieux)", "%", ".1f")
-    ax3.set_ylim(0, max(vals3) * 1.25 if max(vals3) > 0 else 1)
-
-    bar_panel(fig.add_subplot(gs[1, 0]),
-              [m.get("adj_sim_mean", 0) for m in valid],
-              "Similarité cosinus adjacente\n(cohérence sémantique)",
-              "Similarité cosinus", ".3f")
-
-    bar_panel(fig.add_subplot(gs[1, 1]),
-              [m.get("overlap_ratio", 0) * 100 for m in valid],
-              "Taux de chevauchement", "%", ".1f")
-
-    ret_vals = [
-        retrieval_results.get(m["label"], {}).get("sim_concentration_mean", 0.0)
-        for m in valid
-    ]
-    bar_panel(fig.add_subplot(gs[1, 2]),
-              ret_vals,
-              "Concentration des scores de retrieval ↑",
-              "score_max / score_moy", ".3f")
-
-    fig.suptitle(
-        "Comparaison des stratégies de chunking — ResearchPal RAG (Tâche 1)\n"
-        f"Modèle d'embeddings : {EMBED_MODEL}",
-        fontsize=12, fontweight="bold",
-    )
-    _save(fig, "strategy_comparison.png")
 
 
 def fig_grid_search_heatmaps(grid_results: List[Dict]) -> None:
@@ -826,58 +715,6 @@ def fig_adjacent_similarity_boxplot(
     _save(fig, "adjacent_similarity_boxplot.png")
 
 
-def fig_retrieval_comparison(
-    retrieval_results: Dict[str, Dict],
-) -> None:
-    """Side-by-side bar chart for retrieval metrics."""
-    if not retrieval_results:
-        return
-
-    labels  = list(retrieval_results.keys())
-    conc    = [retrieval_results[l]["sim_concentration_mean"] for l in labels]
-    div     = [retrieval_results[l]["source_diversity_mean"]  for l in labels]
-    colors  = [_color(l) for l in labels]
-
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10, 4))
-
-    def _bar(ax, vals, title, ylabel, fmt):
-        bars = ax.bar(labels, vals, color=colors, edgecolor="white",
-                      width=0.5, linewidth=0.8)
-        for b, v in zip(bars, vals):
-            ax.text(b.get_x() + b.get_width() / 2,
-                    b.get_height() + max(vals) * 0.015,
-                    f"{v:{fmt}}", ha="center", va="bottom", fontsize=9)
-        ax.set_title(title, fontsize=10, fontweight="bold")
-        ax.set_ylabel(ylabel, fontsize=9)
-        ax.spines[["top", "right"]].set_visible(False)
-
-    labels_fr = [_FR_STRAT.get(l, l) for l in labels]
-
-    def _bar_fr(ax, vals, title, ylabel, fmt):
-        bars = ax.bar(labels_fr, vals, color=colors, edgecolor="white",
-                      width=0.5, linewidth=0.8)
-        for b, v in zip(bars, vals):
-            ax.text(b.get_x() + b.get_width() / 2,
-                    b.get_height() + max(vals) * 0.015,
-                    f"{v:{fmt}}", ha="center", va="bottom", fontsize=9)
-        ax.set_title(title, fontsize=10, fontweight="bold")
-        ax.set_ylabel(ylabel, fontsize=9)
-        ax.spines[["top", "right"]].set_visible(False)
-
-    _bar_fr(ax1, conc,
-            "Concentration des scores ↑\n(score_max / score_moy par requête)",
-            "Ratio", ".3f")
-    _bar_fr(ax2, div,
-            f"Diversité des sources\n(sources uniques dans le top-{RETRIEVAL_K})",
-            "Effectif", ".2f")
-
-    fig.suptitle(
-        "Évaluation du retrieval — Impact de la stratégie de chunking\n"
-        f"({len(EVAL_QUERIES)} requêtes, top-k={RETRIEVAL_K})",
-        fontsize=11, fontweight="bold",
-    )
-    plt.tight_layout()
-    _save(fig, "retrieval_comparison.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1154,11 +991,8 @@ def main() -> None:
 
     # ── Figures ──────────────────────────────────────────────────────────────
     print("\nStep 8 — Generating figures")
-    fig_chunk_length_histograms(strategy_chunks)
-    fig_strategy_comparison(metrics_list, retrieval_results)
     fig_grid_search_heatmaps(grid_results)
     fig_adjacent_similarity_boxplot(strategy_chunks, embeddings)
-    fig_retrieval_comparison(retrieval_results)
 
     # ── Console summary ──────────────────────────────────────────────────────
     print_summary_table(metrics_list, retrieval_results)

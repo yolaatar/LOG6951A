@@ -163,7 +163,6 @@ def main() -> None:
     print_summary(all_docs, chunks)
 
     print("\n[SUCCESS] Ingestion terminée.")
-    print("Prochaine étape : python src/retrieval/test_retrieval.py\n")
 
 
 if __name__ == "__main__":
