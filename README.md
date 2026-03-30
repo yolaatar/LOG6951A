@@ -56,8 +56,6 @@ source venv/bin/activate
 venv\Scripts\activate
 ```
 
-> Vérifiez que le bon Python est actif : `python --version`
-
 ### 3. Installer les dépendances Python
 
 ```bash
