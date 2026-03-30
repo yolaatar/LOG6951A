@@ -12,13 +12,13 @@
 # langchain-chroma    : intégration officielle ChromaDB
 # langchain-huggingface : HuggingFaceEmbeddings (remplace community)
 # langchain-ollama    : ChatOllama (client local Mistral)
-langchain>=0.3.0
-langchain-core>=0.3.0
-langchain-community>=0.3.0
-langchain-text-splitters>=0.3.0
-langchain-chroma>=0.1.4
-langchain-huggingface>=0.1.0
-langchain-ollama>=0.2.0
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+langchain-chroma
+langchain-huggingface
+langchain-ollama
 
 # ── Base vectorielle ──────────────────────────────────────────────────────────
 chromadb>=0.5.0

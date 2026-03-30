@@ -1,2 +1,0 @@
-keep_cv=True
-keep_hist=False
