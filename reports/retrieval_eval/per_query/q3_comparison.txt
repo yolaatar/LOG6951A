@@ -9,9 +9,9 @@ Query 3 — Synthèse / question large
 
   ── COSINE (baseline)
      Sources   : 1  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation']
-     Intra sim : 0.602  (embedding redundancy)
-     Jaccard   : 0.132  (lexical redundancy)
-     Scores    : top1=0.411  mean=0.326  spread=0.119
+     Intra sim : 0.653  (embedding redundancy)
+     Jaccard   : 0.126  (lexical redundancy)
+     Scores    : top1=0.411  mean=0.332  spread=0.112
 
      [1] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=07e8370ce3b2b2e7  score=0.411
          . RAG can be used on unstructured (usually text), semi-
@@ -20,32 +20,31 @@ Query 3 — Synthèse / question large
          for document retrieval. Given a user query, a document
          retriever is first called to select the most relevant documents
 
-     [2] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=e1b833ae7dad93bd  score=0.300
+     [2] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=42abd0713717f579  score=0.317
+         . Hybrid search[edit] Sometimes vector database searches can
+         miss key facts needed to answer a user's question. One way to
+         mitigate this is to do a traditional text search, add those
+         results to the text chunks linked to the retrieved vectors from
+         the vector search, and feed the combined hybrid text
+
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=e1b833ae7dad93bd  score=0.300
          . Some retrieval methods combine sparse representations, such
          as SPLADE, with query expansion strategies to improve search
          accuracy and recall.[10] Retriever-centric methods[edit] These
          methods aim to enhance the quality of document retrieval in
          vector databases: Pre-training the retriever using the
 
-     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=bdf6366fc31309ce  score=0.300
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=bdf6366fc31309ce  score=0.300
          . Newer implementations (as of 2023[update]) can also
          incorporate specific augmentation modules with abilities such
          as expanding queries into multiple domains and using memory and
          self-improvement to learn from previous retrievals. Finally,
          the LLM can generate output based on both the query and the
 
-     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=a1adb0fa63e553d7  score=0.292
-         . Sparse vectors, which encode the identity of a word, are
-         typically dictionary-length and contain mostly zeros. Dense
-         vectors, which encode meaning, are more compact and contain
-         fewer zeros. Various enhancements can improve the way
-         similarities are calculated in the vector stores
-         (databases).[7] Pe
-
   ── MMR
      Sources   : 2  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'intro_rag.txt']
-     Intra sim : 0.399  (embedding redundancy)
-     Jaccard   : 0.037  (lexical redundancy)
+     Intra sim : 0.395  (embedding redundancy)
+     Jaccard   : 0.028  (lexical redundancy)
 
      [1] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=07e8370ce3b2b2e7
          . RAG can be used on unstructured (usually text), semi-
@@ -62,26 +61,26 @@ Query 3 — Synthèse / question large
          similarities are calculated in the vector stores
          (databases).[7] Pe
 
-     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=f609018d443da254
-         . "Shall We Pretrain Autoregressive Language Models with
-         Retrieval? A Comprehensive Study". Proceedings of the 2023
-         Conference on Empirical Methods in Natural Language Processing.
-         pp. 7763–7786. doi:10.18653/v1/2023.emnlp-main.482. ^
-         Yesilyurt, Metehan (November 11, 2025). "SEO vs. AI search: 101
-         qu
-
-     [4] intro_rag.txt                   text        id=c9b8233af2d1881c
+     [3] intro_rag.txt                   text        id=c9b8233af2d1881c
          Les embeddings Les embeddings sont des représentations
          vectorielles denses des textes qui capturent leur signification
          sémantique. Deux phrases proches sémantiquement auront des
          vecteurs proches dans l'espace d'embeddings. Des modèles légers
          et gratuits comme sentence-transformers all-MiniLM-L6-v2 p
 
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=1dac993553820973
+         . pp. 39–48. doi:10.1145/3397271.3401075. ISBN
+         978-1-4503-8016-4. ^ Wang, Yup; Conroy, John M.; Molino, Neil;
+         Yang, Julia; Green, Mike (2024). "Laboratory for Analytic
+         Sciences in TREC 2024 Retrieval Augmented Generation Track".
+         NIST TREC 2024. Retrieved 15 March 2025. ^ Lee, Kenton; Chang,
+         Ming-Wei
+
   ── OVERLAP ANALYSIS
-     Shared chunks     : 2/4  (overlap_ratio=0.50)
-     Mean rank shift   : 1.00 positions
+     Shared chunks     : 1/4  (overlap_ratio=0.25)
+     Mean rank shift   : 0.00 positions
 
   ── OBSERVATION
      Source delta  : +1  (MMR more diverse)
-     Intra sim Δ   : -0.204  (MMR less redundant)
+     Intra sim Δ   : -0.258  (MMR less redundant)
      [Write your qualitative notes here]

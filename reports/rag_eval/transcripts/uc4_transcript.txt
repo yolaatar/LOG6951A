@@ -1,0 +1,35 @@
+════════════════════════════════════════════════════════════════════════
+  UC4 — Suivi dépendant de l'historique
+  Catégorie : use_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Quelles sont les principales limites de l'approche que tu viens de décrire ?
+
+  Notes : Dépend de l'historique (UC1–UC3 déjà dans la mémoire). Teste la gestion de la coreférence implicite.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 0
+    Sources uniques : 0
+    Citation [N]    : Non
+    Structure 3 sec.: Oui
+    Ancrage         : 0.000  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Oui
+    Verdict         : retrieval vide
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (0)
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+  **Réponse**
+  Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).
+  Je ne peux pas répondre de manière fiable sans source pertinente.
+  
+  **Sources**
+  Aucune source pertinente récupérée.
+  
+  **Limites / Incertitudes**
+  Le corpus actuel ne contient pas d'information suffisamment liée à cette question.

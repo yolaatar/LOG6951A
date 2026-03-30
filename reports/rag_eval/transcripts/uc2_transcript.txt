@@ -1,0 +1,69 @@
+════════════════════════════════════════════════════════════════════════
+  UC2 — Synthèse multi-sources
+  Catégorie : use_case  |  Stratégie : cosine
+════════════════════════════════════════════════════════════════════════
+
+  Question :
+    Quelles sont les principales différences entre la similarité cosinus et MMR pour la récupération de documents dans un pipeline RAG ?
+
+  Notes : Nécessite une synthèse à travers plusieurs chunks — teste la capacité de citation croisée.
+
+────────────────────────────────────────────────────────────────────────
+  Métriques d'évaluation
+    Docs récupérés  : 4
+    Sources uniques : 1
+    Citation [N]    : Oui
+    Structure 3 sec.: Oui
+    Ancrage         : 0.818  (proxy lexical)
+    Risque halluc.  : Non
+    Hors périmètre  : Non
+    Verdict         : succès
+
+────────────────────────────────────────────────────────────────────────
+  Documents récupérés (4)
+    [1] intro_rag.txt  (chunk_id=6858a2d190be23ed)
+        Architecture typique d'un système RAG Un pipeline RAG
+        complet comprend les étapes suivantes :  1. Ingestion — Les
+        documents source (PDF, pages web, textes) sont découpés en
+        chunks,    vectorisés avec un modèle d'embeddings, puis
+        stockés dans une base
+
+    [2] intro_rag.txt  (chunk_id=741aa866333cfd4d)
+        Les stratégies de retrieval Il existe plusieurs stratégies
+        pour récupérer les documents pertinents :  - Similarité
+        cosinus : mesure le cosinus de l'angle entre les vecteurs de
+        la requête et   des chunks. C'est la stratégie de base,
+        rapide et efficace
+
+    [3] intro_rag.txt  (chunk_id=0ee3aef3eb0982b9)
+        Introduction au RAG (Retrieval-Augmented Generation)
+        Qu'est-ce que le RAG ? Le Retrieval-Augmented Generation
+        (RAG) est une architecture qui améliore les modèles de
+        langage (LLM) en leur permettant d'accéder à des
+        informations externes au moment de
+
+    [4] intro_rag.txt  (chunk_id=0ccad027dc7437d8)
+        Optimisation du RAG Plusieurs techniques permettent
+        d'améliorer les performances d'un système RAG : - HyDE
+        (Hypothetical Document Embeddings) : génère un document
+        hypothétique avant la   recherche pour se rapprocher de
+        l'espace des documents plutôt q
+
+────────────────────────────────────────────────────────────────────────
+  Réponse générée
+
+   **Réponse**
+  Le RAG (Retrieval-Augmented Generation) utilise différentes stratégies pour récupérer des documents pertinents lorsque l'utilisateur pose une question. Les deux principales stratégies de retrieval utilisées sont la similarité cosinus et MMR (Maximal Marginal Relevance).
+  
+  Les deux méthodes ont cependant quelques différences notables :
+  - La similarité cosinus est la stratégie de base pour le RAG, rapide et efficace pour la plupart des cas. Elle mesure le cosinus de l'angle entre les vecteurs de la requête et des chunks de documents. Il s'agit donc d'une méthode simple qui permet de trouver des documents proches de la question posée par l'utilisateur ([1], [3]).
+  - MMR (Maximal Marginal Relevance) est une stratégie qui combine pertinence et diversité pour éviter de retourner des chunks trop similaires entre eux. Elle est donc utile quand les documents contiennent beaucoup de répétitions ([2]).
+  - Bien que les deux méthodes soient utilisées dans le contexte du RAG, MMR permet d'obtenir une meilleure diversité et pertinence des résultats que la similarité cosinus seule.
+  
+  **Sources**
+  1. [1] intro_rag.txt
+  2. [2] intro_rag.txt
+  3. [3] intro_rag.txt
+  
+  **Limites / Incertitudes**
+  Les sources fournies ne permettent pas de déterminer si d'autres stratégies de retrieval existent dans le contexte du RAG, ou comment elles peuvent être optimisées pour améliorer les performances des systèmes de question-réponse.

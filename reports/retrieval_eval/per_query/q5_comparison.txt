@@ -9,9 +9,9 @@ Query 5 — Cas limite / requête ambiguë
 
   ── COSINE (baseline)
      Sources   : 2  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'langchain_notes.md']
-     Intra sim : 0.388  (embedding redundancy)
-     Jaccard   : 0.044  (lexical redundancy)
-     Scores    : top1=0.091  mean=0.055  spread=0.077
+     Intra sim : 0.390  (embedding redundancy)
+     Jaccard   : 0.045  (lexical redundancy)
+     Scores    : top1=0.091  mean=0.071  spread=0.062
 
      [1] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=5f2319be59165078  score=0.091
          . pp. 8371–8384. arXiv:2301.12652. doi:10.18653/v1/2024.naacl-
@@ -28,21 +28,19 @@ Query 5 — Cas limite / requête ambiguë
          fournit des abstractions et des outils pour composer des
          chaînes de trait
 
-     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=103733412631d07e  score=0.029
+     [3] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=f609018d443da254  score=0.080
+         . "Shall We Pretrain Autoregressive Language Models with
+         Retrieval? A Comprehensive Study". Proceedings of the 2023
+         Conference on Empirical Methods in Natural Language Processing.
+         pp. 7763–7786. doi:10.18653/v1/2023.emnlp-main.482
+
+     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=103733412631d07e  score=0.029
          . Black-lettered boxes show data being changed, and blue
          lettering shows the algorithm performing the changes. By
          redesigning the language model with the retriever in mind, a
          25-time smaller network can get comparable perplexity as its
          much larger counterparts.[14] Because it is trained from
          scratch
-
-     [4] https://en.wikipedia.org/wiki/Retrieval-augmented_generation  web         id=f609018d443da254  score=0.014
-         . "Shall We Pretrain Autoregressive Language Models with
-         Retrieval? A Comprehensive Study". Proceedings of the 2023
-         Conference on Empirical Methods in Natural Language Processing.
-         pp. 7763–7786. doi:10.18653/v1/2023.emnlp-main.482. ^
-         Yesilyurt, Metehan (November 11, 2025). "SEO vs. AI search: 101
-         qu
 
   ── MMR
      Sources   : 2  ['https://en.wikipedia.org/wiki/Retrieval-augmented_generation', 'langchain_notes.md']
@@ -85,5 +83,5 @@ Query 5 — Cas limite / requête ambiguë
 
   ── OBSERVATION
      Source delta  : +0  (same coverage)
-     Intra sim Δ   : -0.143  (MMR less redundant)
+     Intra sim Δ   : -0.145  (MMR less redundant)
      [Write your qualitative notes here]

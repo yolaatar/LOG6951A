@@ -1,7 +1,7 @@
 # Retrieval Strategy Evaluation
 ## ResearchPal RAG Pipeline — Task 2 (LOG6951A)
 
-*Generated: 2026-03-30 03:28 UTC*
+*Generated: 2026-03-28 04:47 UTC*
 
 **Corpus**: 51 indexed chunks  
 **Embedding model**: `sentence-transformers/all-MiniLM-L6-v2`  
@@ -25,9 +25,9 @@
 | Metric | Cosine (baseline) | MMR | Δ (MMR − Cosine) |
 |--------|:-----------------:|:---:|:-----------------:|
 | Distinct sources | 1.80 | 2.20 | +0.40 |
-| Intra-result similarity ↓ | 0.552 | 0.359 | -0.193 |
-| Jaccard redundancy ↓ | 0.084 | 0.032 | -0.051 |
-| Avg chunk length (chars) | 649 | 637 | -11 |
+| Intra-result similarity ↓ | 0.562 | 0.358 | -0.204 |
+| Jaccard redundancy ↓ | 0.083 | 0.031 | -0.052 |
+| Avg chunk length (chars) | 641 | 654 | +13 |
 | Score top-1 (cosine only) | 0.318 | 0.000 | -0.318 |
 
 > **Intra-result similarity**: mean pairwise cosine similarity among the k returned chunks. Lower = more diverse result set.  
@@ -41,9 +41,9 @@
 |---|----------|:----------:|:-------:|:----:|:----------:|:---------:|:-------:|:------:|
 | Q1 | Définition / question fac | 1 | 2 | +1 | 0.655 | 0.481 | 0.50 | 0.0 |
 | Q2 | Comparaison entre deux co | 2 | 2 | +0 | 0.533 | 0.449 | 0.75 | 0.0 |
-| Q3 | Synthèse / question large | 1 | 2 | +1 | 0.602 | 0.399 | 0.50 | 1.0 |
+| Q3 | Synthèse / question large | 1 | 2 | +1 | 0.653 | 0.395 | 0.25 | 0.0 |
 | Q4 | Question précise / mot-cl | 3 | 3 | +0 | 0.580 | 0.221 | 0.25 | 0.0 |
-| Q5 | Cas limite / requête ambi | 2 | 2 | +0 | 0.388 | 0.245 | 0.50 | 0.0 |
+| Q5 | Cas limite / requête ambi | 2 | 2 | +0 | 0.390 | 0.245 | 0.50 | 0.0 |
 
 ---
 
@@ -54,13 +54,13 @@
 | 0.1 | 0.339 | 2.20 |
 | 0.2 | 0.339 | 2.20 |
 | 0.3 | 0.338 | 2.20 |
-| 0.4 | 0.346 | 2.20 |
-| 0.5 | 0.359 | 2.20 **← selected** |
+| 0.4 | 0.338 | 2.20 |
+| 0.5 | 0.358 | 2.20 **← selected** |
 | 0.6 | 0.359 | 2.20 |
-| 0.7 | 0.462 | 2.00 |
-| 0.8 | 0.462 | 2.00 |
-| 0.9 | 0.539 | 1.80 |
-| 1.0 | 0.552 | 1.80 |
+| 0.7 | 0.438 | 2.20 |
+| 0.8 | 0.468 | 2.00 |
+| 0.9 | 0.541 | 1.80 |
+| 1.0 | 0.562 | 1.80 |
 
 ---
 
@@ -68,12 +68,12 @@
 
 | k | Cosine intra ↓ | Cosine sources | MMR intra ↓ | MMR sources |
 |---|:-------------:|:--------------:|:-----------:|:-----------:|
-| 2 | 0.545 | 1.60 | 0.371 | 1.80 |
-| 3 | 0.552 | 1.80 | 0.343 | 2.20 |
-| 4 **←** | 0.552 | 1.80 | 0.359 | 2.20 |
-| 5 | 0.532 | 2.00 | 0.389 | 2.20 |
-| 6 | 0.526 | 2.20 | 0.388 | 2.40 |
-| 8 | 0.529 | 2.40 | 0.416 | 2.40 |
+| 2 | 0.573 | 1.60 | 0.371 | 1.80 |
+| 3 | 0.568 | 1.80 | 0.343 | 2.20 |
+| 4 **←** | 0.562 | 1.80 | 0.358 | 2.20 |
+| 5 | 0.548 | 1.80 | 0.384 | 2.20 |
+| 6 | 0.535 | 2.20 | 0.379 | 2.40 |
+| 8 | 0.536 | 2.40 | 0.407 | 2.40 |
 
 ---
 
@@ -146,22 +146,22 @@
 **Cosine results**:
 
 - Rank 1: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". RAG can be used on unstructured (usually text), semi-structured, or structured…"* (score: 0.411)
-- Rank 2: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Some retrieval methods combine sparse representations, such as SPLADE, with qu…"* (score: 0.300)
-- Rank 3: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Newer implementations (as of 2023[update]) can also incorporate specific augme…"* (score: 0.300)
-- Rank 4: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Sparse vectors, which encode the identity of a word, are typically dictionary-…"* (score: 0.292)
+- Rank 2: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Hybrid search[edit] Sometimes vector database searches can miss key facts need…"* (score: 0.317)
+- Rank 3: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Some retrieval methods combine sparse representations, such as SPLADE, with qu…"* (score: 0.300)
+- Rank 4: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Newer implementations (as of 2023[update]) can also incorporate specific augme…"* (score: 0.300)
 
 **MMR results** (λ=0.5):
 
 - Rank 1: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". RAG can be used on unstructured (usually text), semi-structured, or structured…"*
 - Rank 2: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Sparse vectors, which encode the identity of a word, are typically dictionary-…"*
-- Rank 3: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". "Shall We Pretrain Autoregressive Language Models with Retrieval? A Comprehens…"*
-- Rank 4: `intro_rag.txt` — *"Les embeddings Les embeddings sont des représentations vectorielles denses des t…"*
+- Rank 3: `intro_rag.txt` — *"Les embeddings Les embeddings sont des représentations vectorielles denses des t…"*
+- Rank 4: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". pp. 39–48. doi:10.1145/3397271.3401075. ISBN 978-1-4503-8016-4. ^ Wang, Yup; C…"*
 
 **Quantitative observations**:
 
 - **Diversity**: MMR retrieved from +1 additional source(s)
-- **Redundancy**: MMR reduced embedding redundancy by 0.204
-- **Overlap**: 2/4 chunks shared (overlap ratio: 0.50) — mean rank shift of 1.0 positions
+- **Redundancy**: MMR reduced embedding redundancy by 0.258
+- **Overlap**: 1/4 chunks shared (overlap ratio: 0.25) — mean rank shift of 0.0 positions
 - **Relevance assessment**: [To be filled based on chunk content inspection]
 
 ---
@@ -205,8 +205,8 @@
 
 - Rank 1: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". pp. 8371–8384. arXiv:2301.12652. doi:10.18653/v1/2024.naacl-long.463. Retrieve…"* (score: 0.091)
 - Rank 2: `langchain_notes.md` — *"# Notes sur LangChain pour le projet ResearchPal  ## Qu'est-ce que LangChain ?  …"* (score: 0.085)
-- Rank 3: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Black-lettered boxes show data being changed, and blue lettering shows the alg…"* (score: 0.029)
-- Rank 4: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". "Shall We Pretrain Autoregressive Language Models with Retrieval? A Comprehens…"* (score: 0.014)
+- Rank 3: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". "Shall We Pretrain Autoregressive Language Models with Retrieval? A Comprehens…"* (score: 0.080)
+- Rank 4: `https://en.wikipedia.org/wiki/Retrieval-augmented_generation` — *". Black-lettered boxes show data being changed, and blue lettering shows the alg…"* (score: 0.029)
 
 **MMR results** (λ=0.5):
 
@@ -218,7 +218,7 @@
 **Quantitative observations**:
 
 - **Diversity**: Both strategies retrieved from the same sources
-- **Redundancy**: MMR reduced embedding redundancy by 0.143
+- **Redundancy**: MMR reduced embedding redundancy by 0.145
 - **Overlap**: 2/4 chunks shared (overlap ratio: 0.50) — mean rank shift of 0.0 positions
 - **Relevance assessment**: [To be filled based on chunk content inspection]
 
@@ -228,7 +228,7 @@
 
 ### Selected strategy: MMR with Cosine as baseline
 
-The evaluation over 5 queries demonstrates that MMR consistently reduces embedding-based redundancy (Δ = -0.193 on average) while improving source diversity (Δ = +0.40 distinct sources on average).
+The evaluation over 5 queries demonstrates that MMR consistently reduces embedding-based redundancy (Δ = -0.204 on average) while improving source diversity (Δ = +0.40 distinct sources on average).
 
 **Parameter justification**:
 

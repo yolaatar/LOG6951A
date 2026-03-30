@@ -1,0 +1,61 @@
+════════════════════════════════════════════════════════════════════════
+  DIAL3 — Dialogue limite — contexte insuffisant (3 tours)
+════════════════════════════════════════════════════════════════════════
+
+  ── Tour 1
+  Utilisateur : Qu'est-ce que le multi-query retrieval avec Reciprocal Rank Fusion (RRF) ?
+
+  Métriques :
+    Citation : Oui  |  Structure : OK  |  Docs : 4  |  Ancrage : 0.60  |  Réf. hist. : Non
+
+  ResearchPal :
+     **Réponse**
+    Le Multi-query retrieval avec Reciprocal Rank Fusion (RRF) est une stratégie de récupération de documents qui génère plusieurs reformulations d'une requête et agrège les résultats en utilisant la méthode de fusion Reciprocal Rank. Cela permet d'améliorer le rappel pour les questions ambiguës ou complexes.
+    
+    [1] (text) intro_rag.txt : "multi-query retrieval : génère plusieurs reformulations de la question et agrège les résultats"
+    
+    **Sources**
+    - [1] intro_rag.txt
+    
+    **Limites / Incertitudes**
+    Aucune information spécifique sur le Reciprocal Rank Fusion n'est fournie dans le contexte, il est donc nécessaire de faire une recherche complémentaire pour obtenir plus d'informations sur cette méthode.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 2
+  Utilisateur : Quelle est la valeur exacte du paramètre rrf_k utilisé dans ce projet et pourquoi ?
+
+  Métriques :
+    Citation : Non  |  Structure : OK  |  Docs : 0  |  Ancrage : 0.00  |  Réf. hist. : Non
+
+  ResearchPal :
+    **Réponse**
+    Votre question semble hors périmètre du corpus indexé (RAG/LangChain/docs chargés).
+    Je ne peux pas répondre de manière fiable sans source pertinente.
+    
+    **Sources**
+    Aucune source pertinente récupérée.
+    
+    **Limites / Incertitudes**
+    Le corpus actuel ne contient pas d'information suffisamment liée à cette question.
+
+────────────────────────────────────────────────────────────────────────
+
+  ── Tour 3
+  Utilisateur : Quel modèle de benchmark as-tu utilisé pour valider ces résultats ? Donne les chiffres précis de performance.
+
+  Métriques :
+    Citation : Non  |  Structure : OK  |  Docs : 4  |  Ancrage : 0.67  |  Réf. hist. : Oui
+
+  ResearchPal :
+     **Réponse**
+    Le projet n'indique pas explicitement le modèle de benchmark utilisé pour évaluer les performances du système RAG. Les chiffres précis de performance ne sont pas fournis dans le contexte fourni.
+    
+    **Sources**
+    Aucune source pertinente récupérée.
+    
+    **Limites / Incertitudes**
+    Le contexte actuel ne contient pas d'information sur le modèle de benchmark utilisé ou les performances des résultats. Plusieurs approches de benchmark sont possibles pour évaluer la qualité des résultats d'un système RAG, mais aucune n'est explicitement mentionnée dans le contexte fourni.
+
+────────────────────────────────────────────────────────────────────────
+

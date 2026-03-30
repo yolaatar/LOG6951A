@@ -1,7 +1,7 @@
 # Chunking Strategy Analysis
 ## ResearchPal RAG Pipeline — Task 1 (LOG6951A)
 
-*Generated: 2026-03-30 03:28 UTC*
+*Generated: 2026-03-28 04:47 UTC*
 
 **Embedding model:** `sentence-transformers/all-MiniLM-L6-v2`  
 **Primary config:** `chunk_size=800`, `chunk_overlap=150` (overlap ratio = 18.8%)
@@ -24,6 +24,7 @@
 |----------|-------:|----------------:|--------:|------------:|----------:|--------------:|
 | **Fixed** | 49 | 777 | 92 | 98.0% | 0.620 | 18.8% |
 | **Recursive** **★** | 51 | 669 | 161 | 88.2% | 0.569 | 18.8% |
+| **Semantic** | 34 | 915 | 1533 | 8.8% | 0.329 | 18.8% |
 
 > **Mid-End %**: proportion of chunks not ending at a sentence boundary (lower is better).  
 > **Adj Sim**: mean cosine similarity between consecutive chunks (higher = smoother transitions, indicates coherent segmentation).
@@ -38,6 +39,7 @@
 |----------|--------------------------|------------------|
 | Fixed | 1.995 | 1.80 |
 | Recursive | 3.002 | 2.20 |
+| Semantic | 2.885 | 1.60 |
 
 > **Similarity concentration**: ratio of top-1 score to mean of top-k scores.  
 > A value near 1.0 means all top-k chunks are equally relevant (low discrimination).  
@@ -113,6 +115,32 @@ sont découpés en chunks,    vectorisés avec un modèle d'embeddings, puis sto
 dans une base vectorielle.  2. Retrieval — Lorsqu'un utilisateur pose une
 question, elle est vectorisée de la même    façon. Les chunks les plus proches
 dans l'espace vectoriel sont récupérés.  3. Augmentation — L
+[…truncated]
+```
+
+### Semantic
+
+**Chunk 0** — 778 chars | start: ✓ | end: ✓
+
+```
+Introduction au RAG (Retrieval-Augmented Generation)  Qu'est-ce que le RAG ? Le
+Retrieval-Augmented Generation (RAG) est une architecture qui améliore les
+modèles de langage (LLM) en leur permettant d'accéder à des informations
+externes au moment de la génération. Plutôt que de s'appuyer uniquement sur les
+connaissances encodées lors de l'entraînement, un système RAG interroge une base
+de connaissances externe en temps réel. Pourquoi utiliser le
+[…truncated]
+```
+
+**Chunk 1** — 573 chars | start: ✓ | end: ✓
+
+```
+Architecture typique d'un système RAG Un pipeline RAG complet comprend les
+étapes suivantes :  1. Ingestion — Les documents source (PDF, pages web, textes)
+sont découpés en chunks,    vectorisés avec un modèle d'embeddings, puis stockés
+dans une base vectorielle. 2. Retrieval — Lorsqu'un utilisateur pose une
+question, elle est vectorisée de la même    façon. Les chunks les plus proches
+dans l'espace vectoriel sont récupérés. 3. Augmentation — Les
 […truncated]
 ```
 
