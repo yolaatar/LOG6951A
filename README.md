@@ -32,14 +32,7 @@ ollama pull mistral:7b-instruct
 
 ## Installation
 
-### 1. Cloner le dépôt
-
-```bash
-git clone <url-du-repo>
-cd LOG6951A
-```
-
-### 2. Créer et activer l'environnement virtuel
+### 1. Créer et activer l'environnement virtuel
 
 ```bash
 python3.11 -m venv .venv
@@ -47,7 +40,7 @@ source .venv/bin/activate        # macOS / Linux
 # .venv\Scripts\activate         # Windows
 ```
 
-### 3. Installer les dépendances
+### 2. Installer les dépendances
 
 ```bash
 pip install --upgrade pip
@@ -56,7 +49,7 @@ pip install -r requirements.txt
 
 > Le premier `pip install` télécharge le modèle d'embedding `all-MiniLM-L6-v2` (~90 Mo) depuis HuggingFace. Une connexion internet est requise lors de cette étape.
 
-### 4. Vérifier l'environnement
+### 3. Vérifier l'environnement
 
 ```bash
 python src/main.py
