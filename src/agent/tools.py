@@ -88,9 +88,12 @@ def web_search(query: str) -> str:
     message d'erreur explicite si la recherche échoue ou renvoie 0 résultats.
     """
     try:
-        from duckduckgo_search import DDGS
+        from ddgs import DDGS
     except ImportError:
-        return "Erreur : package duckduckgo-search non installé. Lancez : pip install duckduckgo-search"
+        try:
+            from duckduckgo_search import DDGS
+        except ImportError:
+            return "Erreur : package ddgs non installé. Lancez : pip install ddgs"
 
     try:
         with DDGS() as ddgs:

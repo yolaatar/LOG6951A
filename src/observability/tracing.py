@@ -49,14 +49,22 @@ def setup_tracing(project_name: str = "researchpal-v2") -> bool:
         print("  → pip install arize-phoenix openinference-instrumentation-langchain")
         return False
 
-    try:
-        # Lance le serveur Phoenix local (http://localhost:6006)
-        _phoenix_session = px.launch_app()
-        print(f"[observability] Phoenix démarré → {_phoenix_session.url}")
-    except Exception as exc:
-        print(f"[observability] Impossible de démarrer Phoenix : {exc}")
-        print("  → Vérifiez qu'aucun autre processus n'occupe le port 6006")
-        return False
+    # Vérifie si Phoenix est déjà actif sur le port 6006
+    import socket
+    already_running = False
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        already_running = s.connect_ex(("localhost", 6006)) == 0
+
+    if already_running:
+        print("[observability] Phoenix déjà actif → http://localhost:6006")
+    else:
+        try:
+            _phoenix_session = px.launch_app()
+            print(f"[observability] Phoenix démarré → http://localhost:6006")
+        except Exception as exc:
+            print(f"[observability] Impossible de démarrer Phoenix : {exc}")
+            print("  → Vérifiez qu'aucun autre processus n'occupe le port 6006")
+            return False
 
     # Configuration OpenTelemetry → Phoenix OTLP endpoint
     try:

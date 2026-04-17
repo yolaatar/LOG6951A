@@ -33,6 +33,8 @@ def get_pipeline() -> RAGPipeline:
 @st.cache_resource(show_spinner="Chargement du pipeline agentique (TP2)...")
 def get_agent():
     from agent.graph import get_agent_graph
+    from observability.tracing import setup_tracing
+    setup_tracing()
     return get_agent_graph()
 
 

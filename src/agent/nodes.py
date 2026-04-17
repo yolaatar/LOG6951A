@@ -41,13 +41,19 @@ def _tracer():
 
 _ROUTE_PROMPT = ChatPromptTemplate.from_messages([
     ("system",
-     "Tu es un routeur de requêtes pour un assistant documentaire RAG.\n"
-     "Détermine si la question doit être répondue depuis :\n"
-     "- 'corpus' : la base documentaire locale (RAG, LangChain, embeddings, "
-     "retrieval, LLM, prompt engineering, ChromaDB, etc.)\n"
-     "- 'web'    : une recherche internet (actualités, données temps réel, "
-     "prix, événements récents, sujets hors-corpus)\n"
-     "Réponds UNIQUEMENT par 'corpus' ou 'web', sans ponctuation ni explication."),
+     "Tu es un routeur de requêtes. Réponds UNIQUEMENT par le mot 'corpus' ou le mot 'web'.\n\n"
+     "Réponds 'corpus' si la question porte sur : RAG, LangChain, embeddings, retrieval, "
+     "vectorstore, ChromaDB, LLM, prompt engineering, chunking, MMR, LCEL.\n\n"
+     "Réponds 'web' si la question porte sur : prix boursiers, actualités, météo, "
+     "données financières, événements récents, informations en temps réel, "
+     "ou tout sujet absent du corpus RAG/LangChain.\n\n"
+     "Exemples :\n"
+     "Question : Qu'est-ce que le RAG ? → corpus\n"
+     "Question : Comment fonctionne ChromaDB ? → corpus\n"
+     "Question : Quel est le cours de l'action Apple ? → web\n"
+     "Question : Quelle est la météo à Montréal ? → web\n"
+     "Question : Qui a gagné la Coupe du monde 2022 ? → web\n\n"
+     "Réponds UNIQUEMENT par 'corpus' ou 'web'."),
     ("human", "Question : {question}"),
 ])
 
@@ -66,10 +72,11 @@ _TRANSFORM_PROMPT = ChatPromptTemplate.from_messages([
     ("system",
      "Tu es un spécialiste de l'optimisation de requêtes pour moteurs de recherche "
      "vectoriels.\n"
-     "Reformule la requête pour améliorer le rappel dans une base documentaire sur "
-     "le RAG et LangChain.\n"
-     "Retourne UNIQUEMENT la requête reformulée, sans explication."),
-    ("human", "Requête originale : {query}\n\nRequête reformulée :"),
+     "Reformule la requête en FRANÇAIS pour améliorer le rappel dans une base "
+     "documentaire sur le RAG et LangChain.\n"
+     "Utilise des synonymes et des termes techniques du domaine RAG.\n"
+     "Retourne UNIQUEMENT la requête reformulée en français, sans explication."),
+    ("human", "Requête originale : {query}\n\nRequête reformulée en français :"),
 ])
 
 
@@ -176,7 +183,7 @@ def make_grade_documents_node(llm):
                 if verdict.startswith("OUI"):
                     relevant.append(doc)
 
-            decision = "sufficient" if len(relevant) >= 2 else "insufficient"
+            decision = "sufficient" if len(relevant) >= 1 else "insufficient"
             span.set_attribute("output.docs_relevant", len(relevant))
             span.set_attribute("output.decision", decision)
             span.set_attribute("input.retry_count", state.get("retry_count", 0))
@@ -298,6 +305,11 @@ def make_generate_node(llm):
                 )
 
             span.set_attribute("output.answer_len", len(answer))
+
+            if DEBUG_TRACE:
+                print(f"\n{'='*60}")
+                print(f"[réponse] {answer[:800]}{'…' if len(answer) > 800 else ''}")
+                print(f"{'='*60}\n")
 
         return {"generation": answer}
 
