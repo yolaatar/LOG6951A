@@ -1,0 +1,107 @@
+[
+  {
+    "id": 1,
+    "type": "corpus",
+    "question": "Qu'est-ce que le RAG (Retrieval-Augmented Generation) ?",
+    "ground_truth": "Le RAG est une technique qui combine la recherche d'informations dans une base documentaire avec la génération de texte par un LLM. Au lieu de répondre uniquement depuis sa mémoire paramétrique, le modèle récupère d'abord des passages pertinents depuis un corpus externe, puis génère sa réponse en s'appuyant sur ces documents, ce qui réduit les hallucinations et permet d'utiliser des connaissances à jour.",
+    "context_hint": "définition générale du RAG"
+  },
+  {
+    "id": 2,
+    "type": "corpus",
+    "question": "Quelles sont les deux grandes phases d'un pipeline RAG ?",
+    "ground_truth": "Un pipeline RAG se déroule en deux phases : la phase d'indexation (ingestion des documents, découpage en chunks, vectorisation par embeddings, stockage dans une base vectorielle) et la phase de requête (vectorisation de la question, recherche des chunks les plus proches, construction du prompt avec les chunks, génération de la réponse par le LLM).",
+    "context_hint": "pipeline RAG indexation et requête"
+  },
+  {
+    "id": 3,
+    "type": "corpus",
+    "question": "Comment fonctionne la similarité cosinus dans une recherche vectorielle ?",
+    "ground_truth": "La similarité cosinus mesure l'angle entre deux vecteurs dans un espace à haute dimension. Elle retourne une valeur entre -1 et 1 : 1 signifie que les vecteurs sont identiques, 0 qu'ils sont orthogonaux (sans relation), -1 qu'ils sont opposés. Dans le contexte RAG, on compare le vecteur de la requête avec chaque vecteur de chunk pour identifier les passages les plus sémantiquement proches.",
+    "context_hint": "similarité cosinus embeddings"
+  },
+  {
+    "id": 4,
+    "type": "corpus",
+    "question": "Qu'est-ce que le MMR (Maximal Marginal Relevance) et quel problème résout-il ?",
+    "ground_truth": "Le MMR (Maximal Marginal Relevance) est un algorithme de re-ranking qui équilibre pertinence et diversité dans les résultats de recherche. Il résout le problème de la redondance : une recherche cosinus simple peut retourner plusieurs chunks très similaires entre eux, couvrant les mêmes informations. Le MMR pénalise les documents trop proches des documents déjà sélectionnés, permettant de couvrir différents aspects de la réponse.",
+    "context_hint": "MMR diversité retrieval"
+  },
+  {
+    "id": 5,
+    "type": "corpus",
+    "question": "Quel est le rôle de LangChain dans un pipeline RAG ?",
+    "ground_truth": "LangChain est un framework d'orchestration qui facilite la construction de pipelines RAG en fournissant des abstractions pour les loaders de documents, les text splitters, les embeddings, les bases vectorielles, les LLM et les chaînes de traitement. Il permet de connecter facilement ces composants et de construire des pipelines complexes avec peu de code.",
+    "context_hint": "LangChain orchestration RAG"
+  },
+  {
+    "id": 6,
+    "type": "corpus",
+    "question": "Pourquoi divise-t-on les documents en chunks avant de les indexer ?",
+    "ground_truth": "Le chunking est nécessaire car les modèles d'embedding ont une limite de tokens en entrée et produisent de meilleurs vecteurs sur des passages courts et cohérents. De plus, les LLM ont une fenêtre de contexte limitée : retourner des documents entiers serait trop coûteux en tokens. Un bon chunk doit être suffisamment long pour être informatif mais suffisamment court pour être précis lors du retrieval.",
+    "context_hint": "chunking text splitting embeddings"
+  },
+  {
+    "id": 7,
+    "type": "corpus",
+    "question": "Qu'est-ce qu'un embedding dans le contexte du traitement du langage naturel ?",
+    "ground_truth": "Un embedding est une représentation vectorielle dense d'un texte dans un espace à haute dimension (typiquement 384 à 1536 dimensions). Les embeddings sont appris par des modèles de langage et encodent la sémantique : deux textes au sens proche ont des vecteurs proches. Dans le RAG, les embeddings permettent la recherche sémantique par similarité vectorielle.",
+    "context_hint": "embeddings représentation vectorielle sémantique"
+  },
+  {
+    "id": 8,
+    "type": "corpus",
+    "question": "Comment ChromaDB stocke-t-il et recherche-t-il des documents vectorisés ?",
+    "ground_truth": "ChromaDB est une base vectorielle qui stocke les embeddings avec leurs métadonnées dans une collection persistante sur disque (SQLite). Lors d'une recherche, ChromaDB vectorise la requête, calcule les distances entre le vecteur requête et tous les vecteurs stockés, et retourne les k documents les plus proches selon la métrique choisie (cosinus ou L2). Elle supporte également le filtrage par métadonnées.",
+    "context_hint": "ChromaDB base vectorielle stockage recherche"
+  },
+  {
+    "id": 9,
+    "type": "corpus",
+    "question": "Qu'est-ce que la technique Multi-Query et comment améliore-t-elle le retrieval ?",
+    "ground_truth": "La technique Multi-Query consiste à demander au LLM de générer N reformulations de la requête originale, d'effectuer un retrieval pour chaque variante, puis de fusionner les résultats avec l'algorithme RRF (Reciprocal Rank Fusion). Cela améliore le rappel en capturant des documents pertinents que la requête originale aurait manqués à cause d'une formulation sous-optimale.",
+    "context_hint": "multi-query RRF reformulation requête"
+  },
+  {
+    "id": 10,
+    "type": "corpus",
+    "question": "Quels sont les principaux avantages du RAG par rapport à un LLM utilisé seul ?",
+    "ground_truth": "Le RAG offre plusieurs avantages sur un LLM seul : réduction des hallucinations (la réponse est ancrée sur des documents sources vérifiables), accès à des connaissances à jour sans re-entraînement, traçabilité (on peut citer les sources), adaptabilité à n'importe quel domaine en changeant le corpus, et meilleure performance sur des questions très spécifiques ou techniques.",
+    "context_hint": "avantages RAG vs LLM seul hallucinations sources"
+  },
+  {
+    "id": 11,
+    "type": "multi_hop",
+    "question": "Comment les embeddings et l'algorithme MMR interagissent-ils pour retourner des résultats à la fois pertinents et diversifiés dans un pipeline RAG ?",
+    "ground_truth": "Les embeddings transforment d'abord chaque chunk et la requête en vecteurs sémantiques. L'algorithme MMR utilise ensuite ces vecteurs en deux temps : il calcule la similarité cosinus entre la requête et chaque document (pertinence), puis pénalise les documents trop similaires aux documents déjà sélectionnés (diversité). Le paramètre lambda contrôle l'équilibre : lambda=1 donne une recherche cosinus pure, lambda=0 maximise la diversité.",
+    "context_hint": "embeddings + MMR pertinence diversité pipeline"
+  },
+  {
+    "id": 12,
+    "type": "multi_hop",
+    "question": "En quoi la taille des chunks influence-t-elle la qualité des embeddings et donc la précision du retrieval dans un système RAG ?",
+    "ground_truth": "Des chunks trop courts manquent de contexte, ce qui produit des embeddings peu informatifs et des faux positifs lors du retrieval. Des chunks trop longs diluent la sémantique : l'embedding moyenne des informations disparates, rendant difficile la discrimination entre passages pertinents et non pertinents. La taille optimale dépend du domaine et du modèle d'embedding, mais en général 200-800 tokens avec un overlap permettent des embeddings cohérents et un retrieval précis.",
+    "context_hint": "chunking taille impact embeddings retrieval qualité"
+  },
+  {
+    "id": 13,
+    "type": "adversarial",
+    "question": "Quel est le cours actuel de l'action Apple (AAPL) en bourse ?",
+    "ground_truth": "Cette information n'est pas disponible dans le corpus documentaire. Le corpus contient des documents sur le RAG et LangChain, pas des données financières en temps réel. Il faudrait consulter une source externe comme Yahoo Finance ou Bloomberg pour obtenir cette information.",
+    "context_hint": "hors corpus données financières temps réel"
+  },
+  {
+    "id": 14,
+    "type": "adversarial",
+    "question": "Quel LLM est objectivement le meilleur modèle de langage de tous les temps, et pourquoi ?",
+    "ground_truth": "Cette question ne peut pas recevoir de réponse objective à partir du corpus. La notion de 'meilleur modèle' dépend du cas d'usage, des métriques d'évaluation et évolue rapidement. Le corpus ne contient pas de comparaison exhaustive et définitive des LLM. Tout classement serait subjectif et non fondé sur les documents disponibles.",
+    "context_hint": "question ambiguë subjective piège hallucination"
+  },
+  {
+    "id": 15,
+    "type": "adversarial",
+    "question": "Combien de tokens consomme exactement le modèle Mistral 7B pour répondre à une question sur le RAG en moyenne ?",
+    "ground_truth": "Le corpus ne contient pas de mesures précises de consommation de tokens pour Mistral 7B sur des questions RAG. Cette valeur dépend de nombreux facteurs : longueur de la question, taille du contexte récupéré, longueur de la réponse générée, et varie à chaque requête. Toute réponse chiffrée précise serait une hallucination.",
+    "context_hint": "piège chiffre précis absent du corpus hallucination"
+  }
+]

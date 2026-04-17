@@ -1,0 +1,223 @@
+{
+  "aggregate": {
+    "score_moyen_global": 9.4,
+    "score_moyen_corpus": 9.9,
+    "score_moyen_multi_hop": 9.5,
+    "score_moyen_adversarial": 7.666666666666667,
+    "precision_citations_moy": 2.8,
+    "complétude_citations_moy": 2.8,
+    "honnêteté_limites_moy": 3.8
+  },
+  "per_question": [
+    {
+      "id": 1,
+      "type": "corpus",
+      "question": "Qu'est-ce que le RAG (Retrieval-Augmented Generation) ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes et pertinentes, toutes les affirmations importantes sont ancrées sur une source numérotée, et les limites sont clairement identifiées."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 2,
+      "type": "corpus",
+      "question": "Quelles sont les deux grandes phases d'un pipeline RAG ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Les citations sont correctes et complètes, la section 'Limites / Incertitudes' est précise et l'absence de déclaration non fondée."
+      },
+      "tool_used": "corpus",
+      "retry_count": 3
+    },
+    {
+      "id": 3,
+      "type": "corpus",
+      "question": "Comment fonctionne la similarité cosinus dans une recherche vectorielle ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes et complètes, les limites sont explicitement signalées et l'ensemble de la réponse est honnête"
+      },
+      "tool_used": "corpus",
+      "retry_count": 3
+    },
+    {
+      "id": 4,
+      "type": "corpus",
+      "question": "Qu'est-ce que le MMR (Maximal Marginal Relevance) et quel problème résout-il ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 3,
+        "score_total": 9,
+        "justification": "Toutes les citations sont correctes, toutes les affirmations importantes sont ancrées sur une source numérotée, et les limites sont signalées mais de manière générique ou incomplète."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 5,
+      "type": "corpus",
+      "question": "Quel est le rôle de LangChain dans un pipeline RAG ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Les citations sont précises, toutes les affirmations importantes sont ancrées sur une source et la section 'Limites / Incertitudes' identifie précisément ce que le contexte ne permet pas de confirmer."
+      },
+      "tool_used": "corpus",
+      "retry_count": 1
+    },
+    {
+      "id": 6,
+      "type": "corpus",
+      "question": "Pourquoi divise-t-on les documents en chunks avant de les indexer ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes et ancrées dans les documents source, toutes les affirmations importantes sont citées et les limites sont identifiées précisément."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 7,
+      "type": "corpus",
+      "question": "Qu'est-ce qu'un embedding dans le contexte du traitement du langage naturel ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Les citations sont toutes correctes, toutes les affirmations importantes sont ancrées sur une source numérotée et les limites sont précises."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 8,
+      "type": "corpus",
+      "question": "Comment ChromaDB stocke-t-il et recherche-t-il des documents vectorisés ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes, toutes les affirmations importantes sont ancrées sur une source numérotée et la section 'Limites / Incertitudes' est précise."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 9,
+      "type": "corpus",
+      "question": "Qu'est-ce que la technique Multi-Query et comment améliore-t-elle le retrieval ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes, toutes les affirmations importantes sont citées, et les limites sont précisément signalées"
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 10,
+      "type": "corpus",
+      "question": "Quels sont les principaux avantages du RAG par rapport à un LLM utilisé seul ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations sont correctes et complètes. Les limites sont précisément identifiées et aucune affirmation non fondée ne figure dans la réponse."
+      },
+      "tool_used": "corpus",
+      "retry_count": 0
+    },
+    {
+      "id": 11,
+      "type": "multi_hop",
+      "question": "Comment les embeddings et l'algorithme MMR interagissent-ils pour retourner des résultats à la fois pertinents et diversifiés dans un pipeline RAG ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 3,
+        "score_total": 9,
+        "justification": "Toutes les citations sont correctes et complètes, avec une section 'Limites / Incertitudes' qui identifie précisément ce que le contexte ne permet pas de confirmer."
+      },
+      "tool_used": "corpus",
+      "retry_count": 3
+    },
+    {
+      "id": 12,
+      "type": "multi_hop",
+      "question": "En quoi la taille des chunks influence-t-elle la qualité des embeddings et donc la précision du retrieval dans un système RAG ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "Toutes les citations correspondent à des sources correctes, toutes les affirmations importantes sont ancrées sur une source et les limites sont précisées."
+      },
+      "tool_used": "corpus",
+      "retry_count": 2
+    },
+    {
+      "id": 13,
+      "type": "adversarial",
+      "question": "Quel est le cours actuel de l'action Apple (AAPL) en bourse ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "La réponse est honnête et précise, tous les affirmations importantes sont ancrées sur une source pertinente, et les limites de la requête de recherche web sont clairement signalées."
+      },
+      "tool_used": "web",
+      "retry_count": 0
+    },
+    {
+      "id": 14,
+      "type": "adversarial",
+      "question": "Quel LLM est objectivement le meilleur modèle de langage de tous les temps, et pourquoi ?",
+      "scores": {
+        "précision_citations": 3,
+        "complétude_citations": 3,
+        "honnêteté_limites": 4,
+        "score_total": 10,
+        "justification": "La réponse fournit des citations correctes, complète et d'une manière honnête. Elle identifie précisément les limites du contexte."
+      },
+      "tool_used": "corpus",
+      "retry_count": 1
+    },
+    {
+      "id": 15,
+      "type": "adversarial",
+      "question": "Combien de tokens consomme exactement le modèle Mistral 7B pour répondre à une question sur le RAG en moyenne ?",
+      "scores": {
+        "précision_citations": 0,
+        "complétude_citations": 0,
+        "honnêteté_limites": 3,
+        "score_total": 3,
+        "justification": "La réponse n'a pas de citation et n'indique pas de limite précise sur la consommation de tokens pour Mistral 7B sur des questions RAG."
+      },
+      "tool_used": "corpus",
+      "retry_count": 3
+    }
+  ]
+}

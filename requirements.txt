@@ -45,3 +45,20 @@ matplotlib>=3.8.0
 # ── Utilitaires ───────────────────────────────────────────────────────────────
 tqdm>=4.66.0            # barres de progression (sentence-transformers, ingestion)
 python-dotenv>=1.0.0    # support optionnel .env pour surcharger la config
+
+# ── TP2 — Orchestration agentique ─────────────────────────────────────────────
+langgraph>=0.2.0                   # T1 : state machine LangGraph
+langgraph-checkpoint-sqlite>=1.0.0 # T3 : mémoire court terme SQLite
+
+# ── TP2 — Outils custom ───────────────────────────────────────────────────────
+duckduckgo-search>=6.0.0           # T2 : recherche web sans clé API
+
+# ── TP2 — Observabilité ───────────────────────────────────────────────────────
+arize-phoenix>=4.5.0               # T4 : tracing local (http://localhost:6006)
+openinference-instrumentation-langchain>=0.1.0  # T4 : instrumentation LangChain
+opentelemetry-sdk>=1.0.0           # T4 : spans manuels par nœud
+opentelemetry-exporter-otlp>=1.0.0 # T4 : export OTLP vers Phoenix
+
+# ── TP2 — Évaluation qualité ──────────────────────────────────────────────────
+ragas>=0.1.0                       # T5 : faithfulness + answer_relevancy
+datasets>=2.0.0                    # T5 : format Dataset requis par RAGAS

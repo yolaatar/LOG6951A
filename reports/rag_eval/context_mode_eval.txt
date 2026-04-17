@@ -517,6 +517,6 @@
 ════════════════════════════════════════════════════════════════════════════════
 
   Aucun (baseline)       : —
-  Heuristiques           : meilleur taux de faux rejets | meilleur ancrage
+  Heuristiques           : meilleur taux de faux rejets | meilleur ancrag e
   Concaténation          : meilleur taux de faux rejets | meilleur score cosinus | ⚠ 1 rejet(s) manqué(s)
   Réécriture LLM         : meilleur taux de faux rejets
